@@ -1,0 +1,36 @@
+body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a , h1, h2, h3, h4,h5, h6, i, b, textarea, button, input, select, figure, figcaption {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    border: none;
+    color: #333;
+    box-sizing: border-box;
+    font-family: "Microsoft Yahei",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing: antialiased;
+    &:focus {
+      outline: none;
+    }
+}
+body{
+  min-height:100vh;
+  background-color: #f3f3f3;
+}
+
+.subBtn{
+  display: block;
+  height: 1.2rem;
+  font-size: 16px;
+  border-radius: 0.6rem;
+  width: 56%;
+  background: linear-gradient(to right, #00E6E2 0%, #00CDD4  100%);
+  color: #fff;
+  margin-top: 1.49rem;
+  margin-left:22%;
+}
+.subBtn[disabled] {
+  background: #CFCFCF;
+  color: #FFF;
+}
