@@ -185,6 +185,7 @@ export default {
     position: relative;
     a{
       color:#fff;
+      text-decoration: none;
     }
   }
 

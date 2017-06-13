@@ -1,6 +1,6 @@
 <template>
  <div>
-  <head-top headTitle="常见问题"></head-top>
+  <head-top headTitle="常见问题" linkUs="true" isBack="true"></head-top>
 	<div class="generalQuestion" >
       <group class="content">
       <cell :title="('维粒贷如何获取额度？')" is-link :border-intent="false" :arrow-direction="showContent ? 'up' : 'down'" @click.native="showContent = !showContent" class="content-title">

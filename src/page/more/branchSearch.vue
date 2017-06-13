@@ -61,7 +61,7 @@
             var myGeo = new BMap.Geocoder();
             myGeo.getLocation(point, function (result) {
               that.city = result.addressComponents.city.substr(0,2);  //把城市后面第三个字后截掉
-              this.getCityNet();  //调取城市网点
+              that.getCityNet();  //调取城市网点
             });
           });
         }
@@ -70,7 +70,7 @@
         branchSearch({
           city:this.city
         }).then((data) =>{
-          this.dotList = data.res.data;
+          this.dotList = data.data;
         })
       },
       chooseCity() {

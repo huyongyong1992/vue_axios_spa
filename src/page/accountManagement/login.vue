@@ -2,7 +2,7 @@
     <div class="loginContainer">
         
       <head-top headTitle="登录"></head-top>
-      <img class="logoPic" src="../../images/login_bg_top.png"/>
+      <img class="logoPic" src="../../images/bg02.png"/>
       <div class="user"> 
         <span class="iconfont icon-icon_sjhm"></span>
         <span>手机号码</span>
@@ -32,9 +32,6 @@
         <i class="iconfont icon-iconfontyiqiyibiao"></i>
       </div>
 
-      <div class="wechatLogin">
-        <span class="iconfont icon-icon_wechat"></span><span>微信登录</span>
-      </div>
     </div>
 </template>
 <script>
@@ -68,7 +65,7 @@
           },
           //登录
           logins() {
-            const openId = window.localStorage.getItem('openId')
+            const openId = window.localStorage.getItem('openId');
             login({
               username:this.mobile,
               password:this.password,
@@ -79,6 +76,7 @@
                 return ;
               }
               window.localStorage.setItem('accountId',data.data.accountId);
+              window.localStorage.setItem('accessToken',data.data.accessToken);
               this.$router.push('/borrowMoney')
               
             })
@@ -160,24 +158,7 @@
     }
     .borderTop{
       border-top:none;
-    }
-    /*微信登录*/ 
-    .wechatLogin{
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 1.1rem;
-      span{
-        font-size:14px;
-        color:#999;
-        font-family: 'PingFangSC-Regular';
-      }
-      .icon-icon_wechat{
-        font-size:20px;
-        color: #5AB847;
-        margin-right: 0.28rem;
-      }
-    }
+    } 
+   
   }
 </style>

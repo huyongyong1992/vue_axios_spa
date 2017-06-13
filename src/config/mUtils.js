@@ -118,3 +118,56 @@ export const getImgCodeCommon = mobile => {
           return  'data:image/jpg;base64,'+ data.data.imageBase64;
         })
 }
+
+/**
+ * 图片压缩
+ */
+export const compressImg = (img,width,height) => {
+  //用于压缩图片的canvas
+  let canvas = document.createElement("canvas");
+  let ctx = canvas.getContext('2d');
+
+  //    瓦片canvas
+  var tCanvas = document.createElement("canvas");
+  var tctx = tCanvas.getContext("2d");
+
+  let initSize = img.src.length;
+  var ratio;
+  if ((ratio = width * height / 4000000) > 1) {
+    ratio = Math.sqrt(ratio);
+    width /= ratio;
+    height /= ratio;
+  } else {
+    ratio = 1;
+  }
+  
+  canvas.width = width * 2;
+  canvas.height = height * 2;
+  //铺底色
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //如果图片像素大于100万则使用瓦片绘制
+  var count;
+  if ((count = width * height / 1000000) > 1) {
+    count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
+      //计算每块瓦片的宽和高
+    var nw = ~~(width / count);
+    var nh = ~~(height / count);
+    tCanvas.width = nw *10;
+    tCanvas.height = nh *10;
+    for (var i = 0; i < count; i++) {
+      for (var j = 0; j < count; j++) {
+        tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio * 2, nh * ratio * 2, 0, 0, nw, nh);
+        ctx.drawImage(tCanvas, i * nw, j * nh, nw * 2, nh * 2);
+      }
+    }
+  } else {
+    ctx.drawImage(img, 0, 0, width * 2, height *2);
+  }
+  //进行最小压缩
+  let dataURL = canvas.toDataURL('image/jpeg', 0.9);
+  console.log('压缩前：' + initSize);
+  console.log('压缩后：' + dataURL.length);
+  console.log('压缩率：' + ~~(100 * (initSize - dataURL.length) / initSize) + "%");
+  return dataURL;
+}

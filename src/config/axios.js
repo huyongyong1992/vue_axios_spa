@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { baseUrl } from './env';
 
-const accessToken = localStorage.getItem('accessToken');
+const accessToken =window.localStorage.getItem('accessToken');
 var fetch = axios.create({
 	baseUrl:baseUrl,
 	headers:{'Content-Type': 'application/json'}
@@ -30,7 +30,7 @@ var getInfo = (url='',data={},type='post') =>{
 				
 				return {
 					success: resp.data.success,        //是否响应成功
-					data: resp.data.data || resp,   //前端展示data存储在这里（防后端把数据放到data外面导致报错）
+					data: resp.data.data,   //前端展示data存储在这里（防后端把数据放到data外面导致报错）
 					error: {
 						errorMsg: resp.data.message,     //报错信息
 						errorCode: resp.data.code, 
@@ -41,10 +41,10 @@ var getInfo = (url='',data={},type='post') =>{
     
   }
   if(type === ('post' || 'put')){	//对象拼接成字符串
-		
+		var postUrl = url.split("?")[1] ? url.split("?")[0]+"?"+url.split("?")[1]+"&accessToken="+ accessToken : url+"?accessToken="+accessToken;
     return  fetch({
       method:type,
-      url:url,
+      url:postUrl,
       data:data,
       // transformRequest: [function (obj) {
 			// 	var str = [];

@@ -1,11 +1,11 @@
 
  <template>
   <section class="connectUs">
-    <head-top headTitle="联系客服"></head-top>
+    <head-top headTitle="联系客服" linkUs="false" isBack="true"></head-top>
     <div class="content">
     <article class="title introduce">①客服电话</article>
     <div class="content-text">
-    <a href="tel:4000523528">4000-523-538</a>
+    <a href="tel:4000-523-538">4000-523-538</a>
     <p>拨通后按"4"进入维粒贷在线业务申请</p>
     </div>
     </div>
@@ -72,6 +72,9 @@ export default {
     font-weight:600;
   }
 
+  a:hover{
+    text-decoration: none;
+  }
   .content-text{
     font-size:12px;
     color:#999;

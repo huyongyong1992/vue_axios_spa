@@ -4,7 +4,7 @@
         <head-top headTitle="重置密码"></head-top>
         
         <group>
-          <x-input type="password" placeholder="请重新设置登录密码" v-model="password" >
+          <x-input type="password" placeholder="请重新设置登录密码" v-model="password" @on-blur="blurTestPassword">
             <span slot="label"  class="iconfont icon-icon_dlmm"></span>
             <span slot="label">登录密码</span>
           </x-input>
@@ -15,7 +15,7 @@
           </x-input>
         </group>
        
-        <button class="reset_btn " @click="onConfirm" :disabled="password===''|| password_again==='' || password !=password_again"> 确认 </button>
+        <button class="reset_btn " @click="onConfirm" :disabled="password===''|| password_again==='' || !passwordReg.test(password) || password !=password_again"> 确认 </button>
         
     </div>
 </template>
@@ -29,7 +29,8 @@
         data(){
           return {
             password_again:'',
-            password:''
+            password:'',
+            passwordReg:/[0-9A-Za-z]{8,12}/
           }
         },
         created(){
@@ -54,6 +55,18 @@
               this.$router.push('/resetSuccess')
             })
           }, 
+            blurTestPassword(){
+              if(!this.passwordReg.test(this.password)){
+              this.$vux.toast.show({
+                text: '密码必须是6-16位字母和数字',
+                type: 'text',
+                width:'80%',
+                position:'top',
+                time:1000
+              })
+              return ;
+            } 
+          },
         }
     }
 

@@ -21,7 +21,7 @@
 
 <script>
 import headTop from "../../components/header/head";
-import {searchLimit} from '../../service/getData';
+import { getCheckResult }from '../../service/getData';
 import { customToast } from '../../config/mUtils' ;
 
 
@@ -29,13 +29,15 @@ export default {
     data(){
         return{
         limitMoney:'',
-        openId:''
+        openId:'',
+        accountId:''
         }
     },
 
     created(){
         this.openId = window.localStorage.getItem('openId');
-        this.wldMoney()
+        this.accountId = window.localStorage.getItem("accountId");
+        this.loanMoney()
     },
 
     components:{
@@ -51,15 +53,16 @@ export default {
       click() {
        this.$router.push('/waitingLink')
     },
-      wldMoney(){
-       searchLimit({
-          openId:this.openId
-        }).then((data)=>{
-          if(data.error.error){
-           customToast(data);
-          }
-          this.limitMoney =data.data.wldMoney*1.5;
-        })
+      loanMoney(){
+       getCheckResult({
+        accountId:this.accountId,
+      }).then((data)=>{
+        if(data.error.error) {
+          customToast(data);
+          return ;
+        }
+        this.limitMoney =data.data.orderPreview.loanMoney;
+      })
       }
     },
 }

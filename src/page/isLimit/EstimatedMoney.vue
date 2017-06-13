@@ -21,7 +21,9 @@ export default {
   },
 
   created(){
-    this.EstimatedMoney = getQuery('money') *1.5
+    this.EstimatedMoney = getQuery('money') *1.5;
+    const openId = getQuery('openId');
+
     // this.accountId = window.localStorage.getItem('accountId');
 
   },

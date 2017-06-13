@@ -1,7 +1,7 @@
 <template>
   <div class="registerServerAreement">
   <section class="home">
-   <head-top headTitle="注册服务协议"></head-top>
+   <head-top headTitle="注册服务协议" linkUs="true"></head-top>
       <header class="header blue">
         <div class="left">
           <i class="left-arrow3"></i><i class="left-arrow4"></i>
@@ -109,7 +109,9 @@ import headTop from "../../components/header/head";
 <style lang="scss" scoped>
 .xieyi{
   padding:15px;
+  width:100%;
+  font-size:14px;
 }
 .xieyi h1 { font-weight: bold; padding-top: 3px; font-size: 20px; color: #000; text-align: center;}
- .xieyi p { font-size: 14px; color: #000; text-indent: 2em; padding-top: 5px;}
+ .xieyi p { font-size: 14px; color: #000; text-indent: 2em; padding-top: 5px; text-align:left}
 </style>

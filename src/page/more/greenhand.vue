@@ -10,7 +10,6 @@
 <script>
   import { getOrderList } from '../../service/getData';
   import { getQuery } from '../../config/mUtils';
-  import UpLoad from '../../components/upLoad';
   export default {
     data(){
       return{

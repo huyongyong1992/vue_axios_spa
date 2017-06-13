@@ -1,6 +1,6 @@
 version: '2'
 services:
- o2o-ddk-wechat:
+ o2o-wld-wechat:
    build: .
    image: registry.vcredit.com/o2o/wld-wechat-client
    ports:

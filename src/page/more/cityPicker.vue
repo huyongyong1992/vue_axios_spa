@@ -62,16 +62,35 @@
     methods: {
       getLocation() {
         const that = this;
-        navigator.geolocation.getCurrentPosition(function (position) {
-          var lat = position.coords.latitude;
-          var lon = position.coords.longitude;
-          var point = new BMap.Point(lon, lat);  // 创建坐标点
-          // 根据坐标得到地址描述
-          var myGeo = new BMap.Geocoder();
-          myGeo.getLocation(point, function (result) {
-            that.location = result.addressComponents.city;  //获取当前城市
+        if(navigator.geolocation){
+          navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var point = new BMap.Point(lon, lat);  // 创建坐标点
+            // 根据坐标得到地址描述
+            var myGeo = new BMap.Geocoder();
+            myGeo.getLocation(point, function (result) {
+              that.location = result.addressComponents.city;  //获取当前城市
+            });
+          },function(error) {
+            switch(error.code) {
+              case error.TIMEOUT:
+                  alert("A timeout occured! Please try again!");
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  alert('We can\'t detect your location. Sorry!');
+                  break;
+              case error.PERMISSION_DENIED:
+                  showError('Please allow geolocation access for this to work.');
+                  break;
+              case error.UNKNOWN_ERROR:
+                  alert('An unknown error occured!');
+                  break;
+            }
           });
-         });
+        }else{
+          alert("您的手机暂不支持定位")
+        }
       },
       goAnchor(cityLetter) {
         var anchor = document.getElementById(cityLetter)		

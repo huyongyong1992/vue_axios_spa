@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import { getImageCode,getBankList,bankCardVerify,getIdCardInfo } from '../../../service/getData';
+  import { getImageCode,getBankList,bankCardVerify,getOrder } from '../../../service/getData';
   import headerTop from '../../../components/header/head';
   import countDown from '../../../components/countDown';
   import { getStorage,getQuery,getImgCodeCommon,customToast } from '../../../config/mUtils'
@@ -79,9 +79,6 @@
         idCard:'',
       }
     },
-
-    mounted(){
-    },
     // computed:mapState({
     //   idCard: state => state.idCard,  //获取store中的身份证号
     //   idName: state => state.idName,  //获取store中的姓名
@@ -93,20 +90,27 @@
 
     created () {
       getBankList().then((data) =>{
-        // console.log(data.data)
         this.banks = data.data;
       })
-      const isFromSign = getQuery('from') || '';
-      if(isFromSign) {
-        this.agreeCheck = true;
-        const savingCardDraft = JSON.parse(getStorage('bankCardDraft'));  //读取草稿
-        console.log(savingCardDraft);
-        this.cardNo = savingCardDraft.cardNo;
-        this.mobile = savingCardDraft.mobile;
-        this.smsCode = savingCardDraft.smsCode;
-        this.imgCode = savingCardDraft.imgCode;
-        this.bank = savingCardDraft.bank;
-        this.vercodeURL = savingCardDraft.vercodeURL;
+      // const from = getQuery('from');
+      // if(from) {
+      //   this.agreeCheck = true;
+      // }
+      getOrder({
+        accountId:getStorage("accountId")
+      }).then(data =>{
+        if(data.data.order.applyStep ===240) {
+          this.agreeCheck = true;
+        }
+      });
+      if(getStorage('bankCardDraft')) {
+        const bankCardDraft = JSON.parse(getStorage('bankCardDraft'));  //读取草稿
+        this.cardNo = bankCardDraft.cardNo;
+        this.mobile = bankCardDraft.mobile;
+        this.smsCode = bankCardDraft.smsCode;
+        this.imgCode = bankCardDraft.imgCode;
+        this.bank = bankCardDraft.bank;
+        this.vercodeURL = bankCardDraft.vercodeURL;
         this.isShowImgCode = true;
       }
 
@@ -126,20 +130,27 @@
         localStorage.setItem('bankCardDraft',JSON.stringify(draft))
       },
       linkToSign() {
+        if(this.agreeCheck) {
+          this.$vux.toast.show({
+            text: '您已签过，无需再签'
+          });
+          return ;
+        }
         const orderId = getStorage('orderId');
         const accountId = getStorage('accountId');
         const token = getStorage('accessToken');
         this.saveDraft();
-        getIdCardInfo({
-          orderId:orderId
+        
+        getOrder({
+          accountId:accountId
         }).then((data) => {
           if(data.error.error) {
             customToast(data);
             return ;
           }
-          this.name = data.data.name;
-          this.idCard = data.data.idcardNo;
-          window.location.href = 'http://ddk.wechat.vcredit.com/web/app/wechat_test_sign_wld.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
+          this.name = data.data.order.customerName;
+          this.idCard = data.data.order.idcard;
+          window.location.href = 'http://beauty-dev.vdanbao.com/web/app/wld/wechat_sign.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
         })
       },
       
@@ -203,6 +214,7 @@
       padding-left:4%;
       margin-top:0.45rem;
       font-size:12px;
+      text-align:left;
       .icon-btn_gx_1{
         color:#00BBCC;
       }
@@ -226,6 +238,7 @@
     .weui-cell {
       font-size: 14px;
     }
+ 
     .vux-popup-picker-select{
       text-align: left !important;
     }
@@ -237,9 +250,11 @@
       color: #333333;
       line-height: 45px;
       padding-left:0.4rem;
+      text-align:left;
     }
     .weui-label{
       width:105px !important;
+      text-align:left !important;
     }
     .toSavingCard{
       display:block;

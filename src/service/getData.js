@@ -57,7 +57,7 @@ var createOrder = (params) => getInfo('http://10.160.10.50:8008/orders?openId='+
 var getIdCardInfo = (params) => getInfo('http://10.160.10.50:8008/orders/'+params.orderId+'/idcardImage/info',{},'get');
 
 /**
- * @param {idcardImageObverseBase64}
+ * @param {orderId,idcardImageObverseBase64}
  * 上传身份证正面
  */
 var uploadFacePic = (params) => getInfo('http://10.160.10.50:8008/orders/'+params.orderId+'/idcardImage/obverse',{idcardImageObverseBase64:params.idcardImageObverseBase64},'post');
@@ -134,6 +134,11 @@ var getImageCode = (params) => getInfo('http://10.160.10.50:8019/common/verifica
  */
 var getSmsCode = (params) => getInfo('http://10.160.10.50:8019/common/verification/mobile/'+params.mobile,{"verifyCode":params.verifyCode},'get');
 
+/**
+ * 获取手机短信验证码(不带图形验证码)
+ * @param {mobile，verifyCode} 
+ */
+var getNoImgSmsCode = (params) => getInfo('http://10.160.10.50:8019/common/verification/mobile',params,'get');
 
 /**
  * 普通用户/微信公众号注册
@@ -163,7 +168,7 @@ var branchSearch = (params) => getInfo('http://10.160.10.50:8019/common/query/'+
  * 客户登录: 查询微粒贷额度
  * @param {openId}
  */
-var searchLimit = (params) => getInfo('http://10.160.10.50:8019/common/wechat/loanmoney?openId='+params.openId,{},'get');
+var searchLimit = (params) => getInfo('http://10.160.10.50:8019/common/wechat/loanmoney',params,'get');
 
 
 export { 
@@ -188,6 +193,7 @@ export {
   findPassword,       //找回密码
   resetPassword,      //重置密码
   getSmsCode,         //获取短信验证码
+  getNoImgSmsCode,    //获取没有短信图片验证码的短信验证码
   branchSearch,       //网点查询
   getOpenId,          //获取openId
   getBankList,        //获取银行列表

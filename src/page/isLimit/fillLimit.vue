@@ -3,8 +3,8 @@
   <img src="../../images/bg01.png" class="fillLimit_headPic">
     <p>请填写您的微粒贷额度</p>
     <!--输入限制，最多7位-->
-    <input type="number" name="limit-number" class="limit-number"  v-model="limit" oninput="if(value.length>5)value=value.slice(0,7)"   />
-    <button class="limit_btn"  :disabled="limit==='' || isDisabled" @click="loading">测算我的维粒贷额度</button> 
+    <input type="number" name="limit-number" class="limit-number"  v-model="limit" oninput="if(value.length>5)value=value.slice(0,7)" placeholder="请输入500到300000之间的数额"   />
+    <button class="limit_btn"  :disabled="limit<500 || limit>300000 || isDisabled" @click="loading">测算我的维粒贷额度</button> 
     <!-- <button class="limit_btn" @click="loading" :disabled="isDisabled">测算我的维粒贷额度</button> -->
   </div>
 </template>
@@ -49,7 +49,8 @@ export default {
         loanmoney:this.limit
       }).then((data)=>{
         if(data.error.error){
-          customer(data);
+          customToast(data);
+          return ;
         }
         console.log(data);
         setTimeout(() => { 
@@ -82,6 +83,12 @@ export default {
       font-family:'PingFangSC-Regular';
       text-align: center;
       padding-top:1.1rem;
+    }
+    .limit-number{
+      width:80%;
+      color:#666;
+      font-size:12px;
+      border-radius:35px;
     }
 
     input{

@@ -12,18 +12,15 @@
     </div>
     <div>
     <button class="borrowMoney_btn" @click="activeLimit">两步激活额度</button>
-
     </div>
     <div ></div>
     </div>
   </div>
 </template>
-
 <script>
 import headTop from "../../components/header/head";
-import {createOrder} from '../../service/getData';
-import {searchLimit} from '../../service/getData';
-import { customToast } from '../../config/mUtils' ;
+import {createOrder,getOrder,searchLimit,getToken} from '../../service/getData';
+import { getQuery,customToast } from '../../config/mUtils';
 export default {
     data(){
       return{
@@ -32,54 +29,86 @@ export default {
         openId:''
       }
     },
-
   created(){
       this.openId = window.localStorage.getItem('openId');
-      this.accountId = window.localStorage.getItem("accountId") || '0';
       this.wldMoney()  
     },
-
     components:{
        headTop 
     },
-
     computed:{
         
        
     },
-
     methods:{
       activeLimit() {
-        createOrder({
-           openId:this.openId,
-           accountId:this.accountId
-        }).then((data) =>{
-            if(data.error) {
-          customToast(data);
+        const accountId = window.localStorage.getItem("accountId") || '';
+        const openId = window.localStorage.getItem("openId");
+         //判断是否需要登录
+         getToken({
+           openId:openId
+        }).then((data)=>{
+          if(!data.data.accessToken==""||!data.data.accessToken==null){
+            this.$router.push('borrowMoney')  
+          }
+          else {
+            this.$router.push('login') 
+            return ;
+          }
+      })
+
+        if(!accountId) {
+          this.$router.push('/login');
           return ;
         }
-          console.log(data);
-          this.$router.push('/getLimit/personalAuthentication')
-        }).catch((e)=>{
-          console.log(e)
+        getOrder({
+          accountId:accountId
+        }).then((data) => {
+          var that = this;
+          if(data.error.error){
+            customToast(data);
+            return ;
+          }
+          if(!(data.data && data.data.order && data.data.order.orderId)) {
+            createOrder({
+              openId:that.openId,
+              accountId:accountId
+            }).then((data) =>{
+              if(data.error.error){
+                customToast(data);
+                return ;
+              }
+              that.$router.push('/getLimit/personalAuthentication');
+            })
+          }else if(data.data.order.applyStep=== 10){
+            that.$router.push('/getLimit/personalAuthentication');
+          }else if(data.data.order.applyStep=== 240){
+            that.$router.push('/getLimit/savingCard');
+          }else if(data.data.order.applyStep=== 500){
+            that.$router.push('/calculateLimit');  
+          }else if(data.data.order.applyStep=== 600){
+            that.$router.push('/calculateLimit');  
+          }
+          else if( data.data.closeOrder= true){
+             that.$router.push('/getLimit/personalAuthentication');
+          }
         })
+        
       },
       wldMoney(){
         searchLimit({
           openId:this.openId
         }).then((data)=>{
           if(data.error.error){
-            customer(data);
+            customToast(data);
+            return ;
           }
-          this.limitMoney =data.data.wldMoney*1.5;
+          this.limitMoney = data.data.wldMoney*1.5;
         })
-
       }
     }
 }
-
 </script>
-
 <style lang="scss">
 body{
   background-color:#fff;
@@ -111,8 +140,6 @@ body{
   text-align: center;
   border:40px solid #f5f5f5;
   
-
-
 }
 .content-text{
   opacity: 0.8;
@@ -121,8 +148,6 @@ body{
   color: #FFFFFF;
   line-height: 14px;
   text-align: center;
-
-
 }
 .content-money{
   font-family: PingFangSC-Medium;
@@ -132,7 +157,6 @@ body{
   text-align: center; 
   margin-top:-2.5rem;
   
-
 }
 .borrowMoney_btn{
   height: 44px;
@@ -182,7 +206,5 @@ body{
     height:auto;
 }
 }
-
     
-
 </style>

@@ -18,8 +18,8 @@
       <div class="applySuccess">
        <img src="../../images/img_tg.png" class="applySuccess_pic">
        <p class="Success_content">恭喜您！您的可借额度为</p>
-       <em class="sc">60000</em><!-- 接口 -->
-       <router-link :to="'/borrowSuccess?from=success'">
+       <em class="sc">{{isMoney}}</em><!-- 接口 -->
+       <router-link :to="'/borrowSuccess?from=success+limitM=this.isMoney'">
            <button class="Success_btn">立即借款</button>
        </router-link>
       </div>
@@ -36,7 +36,7 @@
     </div>
     </section>
     <!-- 授信拒绝(签名不通过) -->
-    <section v-if="page==4">
+    <!-- <section v-if="page==4">
      <div>
       <head-top headTitle="授信拒绝" linkUs="true"></head-top>
       <div class="applyFail">
@@ -46,7 +46,7 @@
       </div>
       <button class="Fail_btn" @click="Resign">重新签名</button>
      </div>
-    </section>
+    </section> -->
    </div>
 </template>
 <script>
@@ -56,11 +56,13 @@ import { removeStore } from '../../config/mUtils' ;
 import { customToast } from '../../config/mUtils' ;
 export default {
     data(){
-        return{
-          isDisabled:false,
-          page:1,
-          accountId:''
-        }
+      return{
+        isDisabled:false,
+        page: 1,
+        accountId:'',
+        isMoney:''
+
+      }
     },
 
   created(){
@@ -89,14 +91,15 @@ export default {
        this.isDisabled = false;
        //刷新请求
       getCheckResult({
-        orderId:this.orderId,
+        accountId:this.accountId,
       }).then((data)=>{
         if(data.error.error) {
           customToast(data);
-          return ;
+           return ;
         }
-        this.page = data.orderStatus;
-        if(page==2){
+        this.page = data.data.orderStatus;
+        this.isMoney = data.data.orderPreview.loanMoney;
+        if(this.page===2){
           this.removeStore("savingCardDraft");
           this.removeStore("bankCardDraft");
         }
@@ -112,13 +115,14 @@ export default {
           customToast(data);
           return ;
         }
-        this.page = data.orderStatus;
+        this.page = data.data.orderStatus;
+        this.isMoney = data.data.orderPreview.loanMoney;
       })
     },
     //重新签名
-    Resign(){
-      this.$route.push('/')
-    },
+    // Resign(){
+    //   this.$route.push('/')
+    // },
   }
 }
 

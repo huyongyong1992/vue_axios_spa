@@ -9,7 +9,7 @@
 
 <script>
   import { XInput,Group } from 'vux';
-  import { getSmsCode } from '../service/getData';
+  import { getSmsCode,getNoImgSmsCode } from '../service/getData';
   import { customToast } from '../config/mUtils'
   export default {
     data(){
@@ -24,7 +24,7 @@
     },
 
     created(){
-      this.smsCode = this.defaultVal
+      this.smsCode = this.defaultVal;
     },
     props:[
       'startNo',  //父组件必须传初始计数值
@@ -41,17 +41,33 @@
     },
 
     methods:{
-      btnClick() {  //点击开启倒计时
-        getSmsCode({
-          mobile:this.phoneNo,
-          verifyCode:this.imgCode
-        }).then(data =>{
-          if(data.error.error){
-            customToast(data);
-            return ;
-          }
-        })
-        this.countDown();
+      btnClick() {  
+        if(this.imgCode !== "false") {  //不需要图形验证码（注册页面）
+          getSmsCode({
+            mobile:this.phoneNo,
+            verifyCode:this.imgCode
+          }).then(data =>{
+            if(data.error.error){
+              customToast(data);
+              return ;
+            }
+            this.isDisabled = true;   //倒计时中不允许再次点击
+            this.countDown();
+          })
+        }else{
+          getNoImgSmsCode({
+            mobile:this.phoneNo
+          }).then(data =>{
+            if(data.error.error){
+              customToast(data);
+              return ;
+            }
+            this.isDisabled = true;   //倒计时中不允许再次点击
+            this.countDown();
+            
+          })
+        }
+       
         
       },
       smsCodeChange(val) {
@@ -64,7 +80,7 @@
           that.time -=1;
           that.value = that.time + 's后重发'; //更改显示内容
           that.btn = true;   //字的颜色变灰
-          that.isDisabled = true;   //倒计时中不允许再次点击
+          
           if(that.time == 0) {
             clearInterval(timer); //清除定时器
             that.time = that.startNo; //重设

@@ -1,11 +1,12 @@
 <template>
 <!-- linkUs 不传则不显示右边图片 -->
   <div class="head_top">
-    <header id='head_top'> 
-        <span @click="goBack" class="iconfont icon-btn_back"></span>
-        <div>{{headTitle}}</div>
+    <header id='head_top'>
+        <span v-if="isBack"></span>
+        <span @click="goBack" class="iconfont icon-btn_back" v-else></span>
+        <div class="head-Title">{{headTitle}}</div>
         <div v-if='linkUs'>
-          <a href="tel:13265821397">
+          <a href="tel:400523538">
             <span class="iconfont icon-btn_kf"></span>
           </a>
         </div>
@@ -25,7 +26,7 @@
     mounted(){
        
     },
-    props: ['linkUs', 'headTitle'],
+    props: ['linkUs','headTitle','isBack'],
     computed: {
        
     },
@@ -58,6 +59,12 @@
     .icon-btn_back{
       color:#fff;
       font-size:16px;
+    }
+    a{
+      text-decoration: none;
+    }
+    head-Title{
+      text-align:center;
     }
     div{
       height:1.28rem;

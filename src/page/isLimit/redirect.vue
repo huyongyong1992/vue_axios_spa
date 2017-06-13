@@ -4,7 +4,7 @@
       <article >请确认您有维粒贷额度，<br/>并已使用且正常还款至少一期哦！
       </article> 
       <footer class="footer">
-      <button class="checkNoBtn">我没有</button>
+      <button class="checkNoBtn" @click="toLogin">我没有</button>
       <button class="checkYesBtn" @click="Yes">我有且已使用</button>
       </footer>
       <p class="tips">温馨提示：如您没有维粒贷额度，我们将为您推荐其他产品。</p>
@@ -12,12 +12,9 @@
 </template>
 
 <script>
-  import {getQuery,customer} from '../../config/mUtils';
-  import { getOpenId } from '../../service/getData';
-  import {searchLimit} from '../../service/getData';
-
-
-
+  import {getQuery,customToast} from '../../config/mUtils';
+  import { getOpenId ,searchLimit,getToken} from '../../service/getData';
+  
   export default {
     data(){
       return{
@@ -25,38 +22,59 @@
       }
     },
     created(){
-      this.appid ="";
-      this.redirect();
-      this.openId =window.localStorage.getItem("openId");
+      
+      // this.redirect();
     },
 
     components:{
         
     },
     methods:{
-
+      toLogin() {
+        this.$router.push('/login')
+      },
       Yes(){
+        
+        const openId = getQuery('open_id');
+        window.localStorage.setItem('openId',openId);
+        //判断是否需要登录
+         getToken({
+           openId:openId
+        }).then((data)=>{
+          if(!data.data.accessToken==""||!data.data.accessToken==null){
+            this.$router.push('borrowMoney')  
+          }
+          else {
+            this.$router.push('login') 
+            return ;
+          }
+      })
+        //
         searchLimit({
-          openId:this.openId
+          openId:openId
         }).then((data)=>{
           if(data.error.error){
-            customer(data);
-            return;
+            customToast(data);
+            if(data.error.errorCode === 401) {
+              this.$router.push('login')
+            } 
+            return ;
           }
-          if(data.data.wldMoney== "" || data.data.wldMoney==null){
-            console.log(data);
-             this.$router.push('fillLimit')
+          if(!data.data.wldMoney == ""|| !data.data.wldMoney==null){
+            console.log(data.data.wldMoney);
+            this.$router.push('borrowMoney')  
           }
           else{
-             this.$router.push('login')
+            this.$router.push('fillLimit')
           }
         })
       },
       redirect(){
         const code = getQuery('code');
+        
         getOpenId({
           appid:'wxca056aeb5eea7277',
-          secret:'2edc4d26ac134356c9bc39c7d9d4bfc9',
+          secret:'ca02f835e372398ffecaf424b8e42105',
           code:code,
           grant_type:'authorization_code'
         }).then(data =>{

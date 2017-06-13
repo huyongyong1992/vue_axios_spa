@@ -55,7 +55,7 @@
 
 <script>
   import{ XButton,XInput,Group,PopupPicker,Cell  } from 'vux';
-  import{ getImageCode,getBankList,bankCardVerify,getIdCardInfo } from '../../../service/getData';
+  import{ getImageCode,getBankList,bankCardVerify,getOrder } from '../../../service/getData';
   import { getQuery,getStorage,getImgCodeCommon,customToast } from '../../../config/mUtils' ;
   import countDown from '../../../components/countDown';
   import headerTop from '../../../components/header/head';
@@ -85,18 +85,27 @@
         this.banks = data.data;
       })
       // 判断是否从电子签名页回来的，如果是，则把用户之前填写后保存的信息展示出来
-      const isFromSign = getQuery('from') || '';
-      if(isFromSign) {
-        this.agreeCheck = true;
+      const from =getQuery('from');
+      // if(from) {
+      //   this.agreeCheck = true;
+      // }
+      getOrder({
+        accountId:getStorage("accountId")
+      }).then(data =>{
+        if(data.data.order.applyStep ===240) {
+          this.agreeCheck = true;
+        }
+      });
+      if(getStorage('savingCardDraft')) {
         const savingCardDraft = JSON.parse(getStorage('savingCardDraft'));  //读取草稿
-        console.log(savingCardDraft);
+        console.log(savingCardDraft.vercodeURL)
         this.cardNo = savingCardDraft.cardNo;
         this.mobile = savingCardDraft.mobile;
         this.smsCode = savingCardDraft.smsCode;
         this.imgCode = savingCardDraft.imgCode;
         this.bank = savingCardDraft.bank;
         this.vercodeURL = savingCardDraft.vercodeURL;
-        this.isShowImgCode = true
+        this.isShowImgCode =true;
       }
     },
     // computed:mapState({
@@ -122,20 +131,26 @@
       },
       //跳转前，先把用户信息存起来
       linkToSign() {
+        if(this.agreeCheck) {
+          this.$vux.toast.show({
+            text: '您已签过，无需再签'
+          });
+          return ;
+        }
         const orderId = getStorage('orderId');
         const accountId = getStorage('accountId');
         const token = getStorage('accessToken');
         this.saveDraft();
-        getIdCardInfo({
-          orderId:orderId
+        getOrder({
+          accountId:accountId
         }).then((data) => {
           if(data.error.error) {
             customToast(data);
             return ;
           }
-          this.name = data.data.name;
-          this.idCard = data.data.idcardNo;
-          window.location.href = 'http://ddk.wechat.vcredit.com/web/app/wechat_test_sign_wld.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
+          this.name = data.data.customerName;
+          this.idCard = data.data.idcard;
+          window.location.href = 'http://beauty-dev.vdanbao.com/web/app/wld/wechat_sign.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
         })
         
       },
@@ -178,7 +193,7 @@
             type: 'text',
             width:'80%',
             position:'top',
-            time:100000
+            time:1000
           })
           return ;
         }
@@ -201,6 +216,7 @@
       padding-left:4%;
       margin-top:0.45rem;
       font-size:12px;
+      text-align:left;
       .icon-btn_gx_1{
         color:#00BBCC;
       }
@@ -229,6 +245,7 @@
     }
     .weui-label{
       width:105px !important;
+       text-align:left;
     }
     p{
       padding:0;
@@ -257,12 +274,14 @@
     }
     .imgCode {
       width: 2rem;
-      height: 1.15rem;
+      height: 1.05rem;
       position: absolute;
       right: 0;
       top: 0.05rem;
     }
-    
+   .sendCode{
+    text-align:left;
+   } 
     
   }
   
