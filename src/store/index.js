@@ -10,6 +10,8 @@ const state = {
   idCard:'360622199202035337',
   idName: '胡公满',
   authCode:'',
+  steps:0,
+  authTitle:'',
 }
 
 export default new Vuex.Store({

@@ -1,7 +1,7 @@
 
  <template>
   <section class="connectUs">
-    <head-top headTitle="联系客服" linkUs="false" isBack="true"></head-top>
+    <head-top headTitle="联系客服" ></head-top>
     <div class="content">
     <article class="title introduce">①客服电话</article>
     <div class="content-text">

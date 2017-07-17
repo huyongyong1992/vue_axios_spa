@@ -8,17 +8,17 @@
   </div>
   <div class="main-content">
   <h2>
-    <img src="../../images/dot1.png" />
+    <img src="../../images/dot1.png" >
     客户经理联系
   </h2>
   <p style="border-left: 2px solid #76E7E7;">客户经理联系您补充资料，确定借款金额</p>
   <h2 style="color:#00BBCC">
-  <img src="../../images/dot1.png"/>
+  <img src="../../images/dot1.png">
   门店审核
   </h2>
   <p>门店审核您的资料</p>
   <h2>
-  <img src="../../images/dot0.png" />
+  <img src="../../images/dot0.png" >
   门店审核
   </h2>
   <p>您到门店进行借款签约，签约后放款
@@ -54,7 +54,7 @@ export default {
     checkManager({
       accountId:this.accountId
     }).then(data =>{
-      if(data.error.error) {
+      if(data.error) {
         customToast(data);
         return ;
       }

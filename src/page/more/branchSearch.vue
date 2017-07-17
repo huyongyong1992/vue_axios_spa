@@ -5,7 +5,7 @@
       <span class="title">服务网点</span>
       <div class="headRight" @click="chooseCity">
         <!--<span class="iconfont icon-btn_zk_1"></span>-->
-        <img src="../../images/btn_zk.png" />
+        <img src="../../images/btn_zk.png" >
         <span>{{city}}</span>
         
       </div>

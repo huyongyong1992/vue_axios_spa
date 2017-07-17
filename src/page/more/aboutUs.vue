@@ -1,6 +1,6 @@
 <template>
   <div class="aboutUs">
-     <head-top headTitle="关于我们" linkUs="false" isBack="true"></head-top>
+     <head-top headTitle="关于我们" ></head-top>
     <div class="content">
     <article class="title introduce">公司介绍</article>
     <div class="content-text">

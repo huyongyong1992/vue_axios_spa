@@ -8,41 +8,50 @@
           <span slot="label"  class="iconfont icon-icon_sjhm"></span>
           <span slot="label">手机号码</span>
         </x-input>
-    
-        <x-input title="设置密码" type="password" placeholder="请设置8-12位数字和字母组合" v-model="password" @on-blur="blurTestPassword" >
+
+        <!--<x-input title="设置密码" type="password" placeholder="请设置8-12位数字和字母组合" v-model="password" @on-blur="blurTestPassword"  v-if="isTypeShow" >
           <span slot="label" class="iconfont icon-icon_dlmm"></span>
           <span slot="label">设置密码</span>
-        </x-input>
+          <span slot="right" :class=" [isEay ? 'iconfont icon-icon_mmayanj' : 'iconfont icon-icon_mmayanj eay']" @click="passwordEays"  v-model="isEay"></span>
+        </x-input>-->
+        <div class="user">
+          <span class="iconfont icon-icon_dlmm"></span>
+          <span>设置密码</span>
+          <input  placeholder="请输入登录密码"  type="password"  v-model="password" v-if="isTypeShow"  @blur="blurTestPassword"  @focus="focusTestMobile">
+          <input  placeholder="请输入登录密码"  type="text"  v-model="password" v-else  @blur="blurTestPassword"  @focus="focusTestMobile">
+          <span :class=" [isEay ? 'iconfont icon-icon_mmayanj eay' : 'iconfont icon-icon_mmayanj']" @click="passwordEays"  v-model="isEay"></span>
+        </div>
 
         <!--<x-input title="图片验证码" class="weui-cell_vcode" v-model="imgCode" placeholder="请输入图片验证码">
           <img slot="right" class="imgCode" :src="vercodeURL"  @click="refreshImgCode" v-if="isShowImgCode"/>
           <span slot="label" class="iconfont icon-icon_tpyz"></span>
           <span slot="label">图片验证码</span>
         </x-input>-->
-        
+
         <!--倒计时-->
-        <count-down :startNo="startNo" :phoneNo="mobile" @sendSmsCode = "getSmsCode" isImgShow="true" imgCode="false" :defaultVal="smsCode"></count-down>  
+        <count-down  :phoneNo="mobile" @sendSmsCode = "getSmsCode"  imgCode="false" :defaultVal="smsCode" isImgShow="true"></count-down>
       </group>
       <div class="agree">
         <span :class="[agreeCheck ? 'icon-btn_gx_1' : 'icon-btn_gx_', 'iconfont']" @click="isAgree"></span>
         <span class="gray">同意并签署</span>
-        <span class="server" @click="toRegisterProtocol" >《维粒贷注册服务协议》</span>   
+        <span class="server" @click="toRegisterProtocol" >《维粒贷注册服务协议》</span>
       </div>
       <button class="subBtn" :disabled="mobile===''|| password===''|| smsCode===''||!passwordReg.test(password) || !mobileReg.test(mobile)|| !agreeCheck" @click="registers">立即注册</button>
-      <p class="toLogin">
+      <!--<p class="toLogin">
         <router-link :to="'/login'">
           已经注册，去登录
         </router-link>
-      </p>
+      </p>-->
     </div>
 </template>
 <script>
- import headTop from "../../components/header/head";
- import countDown from "../../components/countDown";
- import { XInput, Group, XButton} from 'vux';
- import { register,getImageCode } from '../../service/getData';
- import {customToast ,getImgCodeCommon } from '../../config/mUtils';
- export default {
+  import md5 from 'js-md5';  //md5加密
+  import headTop from "../../components/header/head";
+  import countDown from "../../components/countDown";
+  import { XInput, Group, XButton} from 'vux';
+  import { register,getImageCode } from '../../service/getData';
+  import {customToast ,getImgCodeCommon } from '../../config/mUtils';
+  export default {
     data(){
       return {
         mobile: '',//手机号码
@@ -52,19 +61,24 @@
         // imgCode:'', //手动输入的图片验证码
         // vercodeURL: '', //图片验证码
         showNotification: false,
-        startNo:60,
         data:{},
         agreeCheck:false,
         isShowImgCode:false,
-        passwordReg:/[0-9A-Za-z]{8,12}/
+        passwordReg: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
+        isEay:false,
+        isTypeShow:true
       }
     },
     created(){
       this.openId = window.localStorage.getItem("openId");
       const registerDraft =JSON.parse(window.localStorage.getItem("registerDraft"));
-      this.mobile = registerDraft.mobile;
-      this.password = registerDraft.password;
-      this.smsCode = registerDraft.smsCode;
+      if(registerDraft) {
+        this.mobile = registerDraft.mobile;
+
+        this.password = registerDraft.password;
+        this.smsCode = registerDraft.smsCode;
+      }
+
     },
     components: {
       headTop,XInput, Group, XButton,countDown
@@ -73,6 +87,30 @@
 
     },
     methods: {
+      focusTestMobile(){
+        if(this.mobile===''){
+          this.$vux.toast.show({
+            text: '请先输入手机号',
+            type: 'text',
+            width:'80%',
+            position:'top:3rem',
+            time:2000
+          })
+         return ;
+        }
+      },
+      blurTestPassword(){
+        if(!this.passwordReg.test(this.password)){
+          this.$vux.toast.show({
+            text: '密码必须是8-16位字母和数字',
+            type: 'text',
+            width:'80%',
+            position:'top;2rem',
+            time:2000
+          })
+        return ;
+       }
+      },
       getSmsCode(msg){
         this.smsCode = msg
       },
@@ -89,21 +127,18 @@
         this.agreeCheck = !this.agreeCheck;
       },
        registers() { //注册
-         register({ //注册接口
+        const password = md5(this.password).toUpperCase();
+        register({ //注册接口
           loginName:this.mobile,
-          password:this.password,
+          password:password,
           smsCode:this.smsCode,
-          openId:this.openId          
+          openId:this.openId
         }).then((data) =>{
-          if(data.error.error) {
+          if(data.error) {
             customToast(data);
             return ;
           }
           window.localStorage.removeItem("registerDraft");  //注册成功后清除草稿
-          if(data.error.errorCode === 401) {  //判断是否登录失效
-            this.$router.push('/login');
-            return ;
-          }
           this.$router.push('/fillLimit')
         })
       },
@@ -128,20 +163,24 @@
       //   getImgCodeCommon(this.mobile).then(e =>{
       //     this.vercodeURL = e
       //   })
-        
-      // }, 
+
+      // },
       blurTestPassword(){
         if(!this.passwordReg.test(this.password)){
           this.$vux.toast.show({
-            text: '密码必须是6-16位字母和数字',
+            text: '密码必须是8-16位字母和数字',
             type: 'text',
             width:'80%',
-            position:'top',
+            position:'top:2rem',
             time:1000
           })
           return ;
-        } 
+        }
       },
+      passwordEays(){
+          this.isEay =! this.isEay;
+          this.isTypeShow =! this.isTypeShow
+        },
     }
 }
 
@@ -163,8 +202,8 @@
     font-family: 'PingFangSC-Regular';
     .logoPic{
       width:100%;
-      height:2.9rem;  
-        
+      height:2.9rem;
+
       display:block;
       margin-bottom:0.82rem;
     }
@@ -175,7 +214,38 @@
       right: 0;
       top: 0.05rem;
     }
-  
+    .user{
+      display: flex;
+      align-items: center;
+      height:50px;
+      width:100%;
+      margin-left:0.4rem;
+      border-top:1px solid #f3f3f3;
+      span{
+        margin-right:10px;
+        color:#666;
+        font-size:14px;
+      }
+      .icon-icon_mmayanj{
+        position:absolute;
+        right:0.18rem;
+        top:1.75rem;
+        font-size:10px;
+      }
+      .eay{
+        color:#81E8E3;
+      }
+      .icon-icon_dlmm{
+        color:#81E8E3;
+        font-size:16px;
+        margin-left:2px;
+      }
+      input{
+        width:3.5rem;
+        margin-left:0.7rem;
+      }
+    }
+
     .weui-cell__hd{
       display:flex;
       width:120px;
@@ -192,6 +262,7 @@
       .icon-icon_sjhm{
         font-size:19px;
       }
+
     }
     /*是否同意*/
     .agree{
@@ -225,7 +296,7 @@
       width: 100%;
       padding:0;
       text-align: center;
-      
+
       font-family: "PingFangSC-Regular";
       margin-top:0.45rem;
       a{
@@ -233,7 +304,7 @@
         color:#00BBCC;
       }
     }
-    
+
   }
 
 </style>

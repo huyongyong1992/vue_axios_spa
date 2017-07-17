@@ -4,7 +4,7 @@
     <header id='head_top'>
         <span v-if="isBack"></span>
         <span @click="goBack" class="iconfont icon-btn_back" v-else></span>
-        <div class="head-Title">{{headTitle}}</div>
+        <div class="head-title">{{headTitle}}</div>
         <div v-if='linkUs'>
           <a href="tel:400523538">
             <span class="iconfont icon-btn_kf"></span>
@@ -40,7 +40,7 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../../style/mixin';
 
   #head_top{
@@ -63,7 +63,7 @@
     a{
       text-decoration: none;
     }
-    head-Title{
+    head-title{
       text-align:center;
     }
     div{

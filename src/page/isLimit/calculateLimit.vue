@@ -1,128 +1,111 @@
 <template>
     <div>
+      <head-top :headTitle="title" linkUs="true" style="width:100%;"></head-top>
     <!-- 计算额度等待页 -->
-    <section v-if="page==1" class="calulateLimit">
-      <head-top headTitle="计算额度" linkUs="true" style="width:100%;"></head-top>
+    <section v-if="page===1" class="calulateLimit">
       <div class="calulateLimit">
        <img src="../../images/img_ddyz.png" class="calulateLimit_pic">
        <p class="content">维粒贷正在验证您的信息~<br>
-       这可能需要<em style="color:#f00;">10-15</em>分钟时间，请您耐心等待~
-       计算完成后我们会短信通知您哒~</p>
+        这可能需要<em style="color:#f00;">10-15</em>分钟时间，请您耐心等待~
+        计算完成后我们会短信通知您哒~
+       </p>
        <button class="refresh_btn" @click="loading" :disabled="isDisabled">刷新一下</button>
       </div>
     </section>
     <!-- 授信通过页 -->
-    <section v-if="page==2">
-     <div>
-      <head-top headTitle="授信成功" linkUs="true"></head-top>
+    <section v-if="page===2">
       <div class="applySuccess">
-       <img src="../../images/img_tg.png" class="applySuccess_pic">
-       <p class="Success_content">恭喜您！您的可借额度为</p>
-       <em class="sc">{{isMoney}}</em><!-- 接口 -->
-       <router-link :to="'/borrowSuccess?from=success+limitM=this.isMoney'">
-           <button class="Success_btn">立即借款</button>
-       </router-link>
+        <img src="../../images/img_tg.png" class="applySuccess_pic">
+        <p class="Success_content">恭喜您！您的可借额度为</p>
+        <em class="sc">{{isMoney}}</em><!-- 接口 -->
+        <router-link :to="'/uploadDebt'">
+          <button class="Success_btn">立即借款</button>
+        </router-link>
       </div>
-     </div>
+  
     </section>
     <!-- 授信拒绝(信用不通过) -->
-    <section v-if="page==-3">
-     <div>
-      <head-top headTitle="授信拒绝" linkUs="true"></head-top>
+    <section v-if="page===3">
       <div class="applyFail">
          <img src="../../images/img_jj.png" class="applyFail_pic">
          <p class="Fail_content">很抱歉，根据您的信用情况，维粒贷暂时无法为您激活额度，30天后您可以再次尝试~</p>
       </div>
-    </div>
     </section>
-    <!-- 授信拒绝(签名不通过) -->
-    <!-- <section v-if="page==4">
-     <div>
-      <head-top headTitle="授信拒绝" linkUs="true"></head-top>
-      <div class="applyFail">
-       <img src="../../images/img_jj.png" class="applyFail_pic">
-       <p class="Fail_content">
-       很抱歉，您的个人信息授权书签名不清晰，请使用正楷再次签名！</p>
-      </div>
-      <button class="Fail_btn" @click="Resign">重新签名</button>
-     </div>
-    </section> -->
+    
    </div>
 </template>
 <script>
 import headTop from "../../components/header/head";
-import { getCheckResult} from "../../service/getData";
-import { removeStore } from '../../config/mUtils' ;
-import { customToast } from '../../config/mUtils' ;
+import { loanMoney} from "../../service/getData";
+import { removeStore,customToast } from '../../config/mUtils' ;
 export default {
-    data(){
-      return{
-        isDisabled:false,
-        page: 1,
-        accountId:'',
-        isMoney:''
-
-      }
-    },
+  data(){
+    return{
+      isDisabled:false,
+      page: 1,
+      accountId:'',
+      isMoney:'',
+      title:'计算额度'
+    }
+  },
 
   created(){
-       
-        this.accountId = window.localStorage.getItem("accountId");
-        this.requeStatus() //预审结果
-    },
+    const orderId = window.localStorage.getItem("orderId");
+    //预审结果
+    loanMoney({
+      orderId:orderId,
+    }).then((data)=>{
+      if(data.error) {
+        customToast(data);
+        return ;
+      }
+      if(data.data.loanMoney !==0 && data.data.applyStep === 600) { //授信通过
+        this.page = 2;
+        this.isMoney = data.data.loanMoney;
+        this.title = '授信通过'
+      }else if(data.data.applyStep === 500){  //审核中
+        this.page = 1;
+        this.title = '计算额度'
+      }else{
+        this.page = 3;
+        this.title = '授信拒绝'
+      }
+      
+    })
+  },
 
-    components:{
-       headTop 
-    },
-
-    computed:{
-        
-       
-    },
+  components:{
+      headTop
+  },
 
   methods:{
     loading(){
       this.$vux.loading.show({
-      text:'loading'
-    });
+        text:'查询中...'
+      });
       this.isDisabled = true;
       setTimeout(() => {
-       this.$vux.loading.hide();
-       this.isDisabled = false;
+        this.$vux.loading.hide();
+        this.isDisabled = false;
        //刷新请求
-      getCheckResult({
-        accountId:this.accountId,
-      }).then((data)=>{
-        if(data.error.error) {
-          customToast(data);
-           return ;
-        }
-        this.page = data.data.orderStatus;
-        this.isMoney = data.data.orderPreview.loanMoney;
-        if(this.page===2){
-          this.removeStore("savingCardDraft");
-          this.removeStore("bankCardDraft");
-        }
-      })
+        loanMoney({
+          orderId:this.orderId,
+        }).then((data)=>{
+          if(data.error) {
+            customToast(data);
+            return ;
+          }
+          if(data.data.loanMoney) { //授信通过
+            this.page = 2;
+            this.isMoney = data.data.loanMoney
+          }else{  //授信不通过
+            this.page = 1;
+          }
+        })
       }, 5000);
-
-  },
-    requeStatus(){
-      getCheckResult({
-        accountId:this.accountId,
-      }).then((data)=>{
-        if(data.error.error) {
-          customToast(data);
-          return ;
-        }
-        this.page = data.data.orderStatus;
-        this.isMoney = data.data.orderPreview.loanMoney;
-      })
-    },
-    //重新签名
-    // Resign(){
-    //   this.$route.push('/')
-    // },
+    }
+    
+   
   }
 }
 
@@ -136,7 +119,7 @@ export default {
   margin-top:1rem;
   width:80%;
   height:auto;
-  text-align:center; 
+  text-align:center;
   position:relative;
 }
 
@@ -146,7 +129,7 @@ export default {
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:space-around; 
+  justify-content:space-around;
   position:relative;
 }
 .content{
@@ -167,7 +150,7 @@ export default {
   letter-spacing: 0;
   line-height: 24px;
   margin-top:-1.8rem;
-  
+
 }
 .refresh_btn{
   height: 44px;
@@ -189,7 +172,7 @@ export default {
   margin-top:1rem;
   width:80%;
   height:auto;
-  text-align:center; 
+  text-align:center;
   position:relative;
 }
 
@@ -199,7 +182,7 @@ export default {
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:space-around; 
+  justify-content:space-around;
   position:relative;
 }
 .Success_content{
@@ -211,17 +194,17 @@ export default {
   color: #666666;
   letter-spacing: 0;
   position:relative;
- 
+
   }
 .sc{
-  
+
   font-family: PingFangSC-Regular;
   font-size: 24px;
   color: #FFA94D;
   letter-spacing: 0;
   line-height: 24px;
   margin-top:-1.8rem;
-  
+
 }
 .Success_btn{
   height: 44px;
@@ -240,7 +223,7 @@ export default {
   margin-top:1rem;
   width:80%;
   height:auto;
-  text-align:center; 
+  text-align:center;
   position:relative;
 }
 
@@ -250,7 +233,7 @@ export default {
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:space-around; 
+  justify-content:space-around;
   position:relative;
 }
 .Fail_content{
@@ -262,7 +245,7 @@ export default {
   color: #666666;
   letter-spacing: 0;
   position:relative;
- 
+
   }
 .sc{
   font-family: PingFangSC-Regular;
@@ -271,7 +254,7 @@ export default {
   letter-spacing: 0;
   line-height: 24px;
   margin-top:-1.5rem;
-  
+
 }
 .Fail_btn{
   height: 44px;

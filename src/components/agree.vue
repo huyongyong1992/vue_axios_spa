@@ -1,11 +1,8 @@
 <template>
 	<div class="agree" >
-		<div @click="isChecked">
-			<img src="../images/activity.png" v-if="checked" />
-			<img src="../images/add_address.png" v-else/>
-		</div>
+		<span :class="[agreeCheck ? 'icon-btn_gx_1' : 'icon-btn_gx_', 'iconfont']" @click="isChecked"></span>
 		<span>我已阅读并签署</span>
-		<span class="blue">《个人信息授权书》</span>
+		<span class="blue" @click="onLink">{{text}}</span>
 	</div>
 </template>
 
@@ -13,20 +10,23 @@
   export default {
   	data(){
       return{
-				checked:true
+				agreeCheck:false
       }
     },
     mounted(){
-       
+
     },
-    props: [],
+    props: ['text'],
     computed: {
-       
+
     },
     methods: {
       isChecked() {
-				this.checked = !this.checked;
-				this.$emit('sendChecked',this.checked);
+				this.agreeCheck = !this.agreeCheck;
+				this.$emit('click',this.agreeCheck);
+			},
+			onLink() {
+				this.$emit('link')
 			}
     }
 
@@ -34,20 +34,26 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .agree{
 		width: 96%;
 		padding-left:4%;
 		margin-top:10px;
 		display: flex;
+		.iconfont{
+			font-size:14px;
+			margin-right:5px;
+		}
+		.icon-btn_gx_1{
+			color:#00BBCC;
+		}
 		.blue{
-			color:#4DB8FF;
+			color:#00BBCC;
 			font-family: PingFangSC-Regular;
 			font-size: 12px;
+      // margin-top: 3px;
 		}
-		img{
-			width:0.4rem;
-		}
+
 	}
-   
+
 </style>

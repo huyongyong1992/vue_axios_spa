@@ -33,9 +33,9 @@ module.exports = merge(baseWebpackConfig, {
             favicon: 'favicon.ico',
             inject: true
         }),
-         new CopyWebpackPlugin([{
-          from: 'mock/',
-          to: 'mock/',
-        }]),
+        //  new CopyWebpackPlugin([{
+        //   from: 'mock/',
+        //   to: 'mock/',
+        // }]),
     ]
 })

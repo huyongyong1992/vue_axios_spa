@@ -1,61 +1,61 @@
 <template>
   <div class="bankCardAuthentication">
-    <header-top linkUs="true" headTitle="获取额度"></header-top>
+    <!--<header-top linkUs="true" headTitle="获取额度"></header-top>-->
     <p>请提供一张本人信用卡</p>
     <group>
-      <x-input 
-        title="信用卡卡号" 
-        placeholder="请输入信用卡号" 
-        :show-clear="true" 
-        required 
-        type="number" 
-        text-align="left" 
+      <x-input
+        title="信用卡卡号"
+        placeholder="请输入信用卡号"
+        :show-clear="true"
+        required
+        type="number"
+        text-align="left"
         v-model="cardNo">
       </x-input>
 
-      <popup-picker  
-        title="发卡银行" 
-        :data="banks" 
-        v-model="bank" 
-        show-name 
+      <popup-picker
+        title="发卡银行"
+        :data="banks"
+        v-model="bank"
+        show-name
         :columns="1"
-        @on-change="onBankChange" 
+        @on-change="onBankChange"
         placeholder="请选择发卡银行">
       </popup-picker>
 
-      <x-input 
-        title="预留手机号" 
-        placeholder="请输入该卡预留手机号" 
-        :show-clear="true" 
-        required 
-        type="number" 
-        text-align="left" 
+      <x-input
+        title="预留手机号"
+        placeholder="请输入该卡预留手机号"
+        :show-clear="true"
+        required
+        type="number"
+        text-align="left"
         v-model="mobile"
-        @on-blur="blurGetImgCode">
+      >
       </x-input>
 
-      <x-input title="图片验证码" v-model="imgCode" placeholder="请输入图片验证码">
+      <!--<x-input title="图片验证码" v-model="imgCode" placeholder="请输入图片验证码">
         <img slot="right" class="imgCode" :src="vercodeURL"  @click="refreshImgCode" v-if="isShowImgCode"/>
-        
+
         <span slot="label">图片验证码</span>
-      </x-input>
-      <count-down startNo="60" @sendSmsCode = "getSmsCode" :defaultVal="smsCode" :phoneNo="mobile" :imgCode="imgCode"></count-down>
+      </x-input>-->
+      <count-down :startNo="60" @sendSmsCode = "getSmsCode" :defaultVal="smsCode" :phoneNo="mobile" imgCode="false"></count-down>
     </group>
     <div class="agree" @click="linkToSign">
       <span :class="[agreeCheck ? 'icon-btn_gx_1' : 'icon-btn_gx_', 'iconfont']"></span>
       <span class="gray">我已阅读并同意签署</span>
-      <a > 
+      <a >
         <span class="server">《个人信息授权书》</span>
       </a>
     </div>
-    <button @click="onSubmit" class="subBtn" :disabled="cardNo===''|| mobile===''|| imgCode===''|| smsCode===''|| !mobileReg.test(mobile) || !agreeCheck || bank === []">下一步</button>
+    <button @click="onSubmit" class="subBtn" :disabled="cardNo===''|| mobile==='' || smsCode===''|| !mobileReg.test(mobile) || !agreeCheck || bank === []">下一步</button>
 
     <router-link :to="'/getLimit/savingCard'" class="toSavingCard">我没有信用卡,去使用储蓄卡</router-link>
   </div>
 </template>
 
 <script>
-  import { getImageCode,getBankList,bankCardVerify,getOrder } from '../../../service/getData';
+  import { getBankList,bankCardVerify,getOrder } from '../../../service/getData';
   import headerTop from '../../../components/header/head';
   import countDown from '../../../components/countDown';
   import { getStorage,getQuery,getImgCodeCommon,customToast } from '../../../config/mUtils'
@@ -71,10 +71,10 @@
         agreeCheck:false,
         banks:[],
         bank:[],
-        isShowImgCode:false,     //图片验证码右边图片
+        // isShowImgCode:false,     //图片验证码右边图片
         imgCode:'',
         mobileReg:/^0?1[3|4|5|7|8][0-9]\d{8}$/,
-        vercodeURL:'',  //图片验证码地址
+        // vercodeURL:'',  //图片验证码地址
         name:'',
         idCard:'',
       }
@@ -85,10 +85,13 @@
     // }),
 
     components:{
+
       XInput,Group,countDown,headerTop,PopupPicker
     },
 
     created () {
+      this.$store.state.steps =2;
+      this.$store.state.authTitle = '银行卡认证';
       getBankList().then((data) =>{
         this.banks = data.data;
       })
@@ -98,24 +101,30 @@
       // }
       getOrder({
         accountId:getStorage("accountId")
-      }).then(data =>{
-        if(data.data.order.applyStep ===240) {
+      }).then((data) =>{
+        if(data.data&&data.data.applyStep === 500) {
           this.agreeCheck = true;
         }
+        this.name = data.data.customerName;
+        this.idCard = data.data.idcard;
       });
       if(getStorage('bankCardDraft')) {
         const bankCardDraft = JSON.parse(getStorage('bankCardDraft'));  //读取草稿
         this.cardNo = bankCardDraft.cardNo;
         this.mobile = bankCardDraft.mobile;
         this.smsCode = bankCardDraft.smsCode;
-        this.imgCode = bankCardDraft.imgCode;
+        // this.imgCode = bankCardDraft.imgCode;
         this.bank = bankCardDraft.bank;
-        this.vercodeURL = bankCardDraft.vercodeURL;
-        this.isShowImgCode = true;
+        // this.vercodeURL = bankCardDraft.vercodeURL;
+        // this.isShowImgCode = true;
       }
 
     },
-
+    computed:{
+      steps: function() {
+        return this.$store.state.steps
+      }
+    },
     methods:{
       //保存用户填写的草稿信息
       saveDraft() {
@@ -123,16 +132,17 @@
           cardNo:this.cardNo,
           mobile:this.mobile,
           smsCode:this.smsCode,
-          imgCode:this.imgCode,
+          // imgCode:this.imgCode,
           bank:this.bank,
-          vercodeURL:this.vercodeURL
+          // vercodeURL:this.vercodeURL
         }
         localStorage.setItem('bankCardDraft',JSON.stringify(draft))
       },
       linkToSign() {
         if(this.agreeCheck) {
           this.$vux.toast.show({
-            text: '您已签过，无需再签'
+            text: '您已签过，无需再签',
+            type:'warn'
           });
           return ;
         }
@@ -140,23 +150,13 @@
         const accountId = getStorage('accountId');
         const token = getStorage('accessToken');
         this.saveDraft();
-        
-        getOrder({
-          accountId:accountId
-        }).then((data) => {
-          if(data.error.error) {
-            customToast(data);
-            return ;
-          }
-          this.name = data.data.order.customerName;
-          this.idCard = data.data.order.idcard;
-          window.location.href = 'http://beauty-dev.vdanbao.com/web/app/wld/wechat_sign.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
-        })
-      },
+        window.location.href = 'http://beauty-dev.vdanbao.com/web/app/wld/wechat_sign.html?orderId=' + orderId + '&accountId=' + accountId + '&token=' + token + '&idcard=' + this.idCard + '&name=' + this.name;
       
+      },
+
       getSmsCode(msg){
         this.smsCode = msg
-        console.log(msg)
+
       },
       onBankChange(val){  //传银行code
         this.bank[0] = val;
@@ -171,43 +171,46 @@
           inputSMSCode :this.smsCode ,
           mobile :this.mobile,
         }).then(data =>{
-          if(data.error.error) {
+          if(data.error) {
             customToast(data);
             return ;
           }
           this.$router.push('/calculateLimit')
-        })  
-        
-      },
-      refreshImgCode() {  //点击刷新验证码
-        getImgCodeCommon(this.mobile).then(e =>{
-          this.vercodeURL = e
         })
+
       },
-      blurGetImgCode() {  //手机号input框失焦获取验证码
-        if(!this.mobileReg.test(this.mobile)){
-          this.$vux.toast.show({
-            text: '请输入正确的手机号码',
-            type: 'text',
-            width:'80%',
-            position:'top',
-            time:100000
-          })
-          return ;
-        }
-        this.isShowImgCode = true;
-        getImgCodeCommon(this.mobile).then(e =>{
-          this.vercodeURL = e
-        })
-      },
-      
-    },  
+      // refreshImgCode() {  //点击刷新验证码
+      //   getImgCodeCommon(this.mobile).then(e =>{
+      //     this.vercodeURL = e
+      //   })
+      // },
+      // blurGetImgCode() {  //手机号input框失焦获取验证码
+      //   if(!this.mobileReg.test(this.mobile)){
+      //     this.$vux.toast.show({
+      //       text: '请输入正确的手机号码',
+      //       type: 'text',
+      //       width:'80%',
+      //       position:'top',
+      //       time:100000
+      //     })
+      //     return ;
+      //   }
+      //   // this.isShowImgCode = true;
+      //   // getImgCodeCommon(this.mobile).then(e =>{
+      //   //   this.vercodeURL = e
+      //   // })
+      // },
+
+    },
   }
 
 </script>
 
 <style lang="scss">
   @import '../../../style/common';
+  .weui-toast{
+    width:50% !important;
+  }
   .bankCardAuthentication{
     .agree{
       width:92%;
@@ -238,7 +241,7 @@
     .weui-cell {
       font-size: 14px;
     }
- 
+
     .vux-popup-picker-select{
       text-align: left !important;
     }
@@ -280,6 +283,6 @@
       top: 0.05rem;
     }
   }
-  
+
 
 </style>

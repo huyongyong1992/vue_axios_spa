@@ -18,36 +18,48 @@
           value:'获取',
           isDisabled:false,
           data:{},
-          smsCode:this.defaultVal,
+          smsCode:'',
           btn:false
         }
     },
 
     created(){
-      this.smsCode = this.defaultVal;
+      this.smsCode = this.defaultVal || '';
     },
-    props:[
-      'startNo',  //父组件必须传初始计数值
-      'defaultVal', //保存草稿后，默认值
-      'phoneNo',   //父组件传过来的电话号码
-      'isImgShow',   //父组件传过来的是否显示左边图片,不传默认为false
-      'imgCode' //图形验证码
-    ],  
+    props:{
+      startNo:{
+        type: Number,
+        default: 60
+      },  //父组件必须传初始计数值
+      defaultVal:{
+        default: ''
+      }, //保存草稿后，默认值
+      phoneNo:{
+        type: [String, Number],
+        required: true
+      },   //父组件传过来的电话号码
+      isImgShow:{
+        default: false
+      },   //父组件传过来的是否显示左边图片,不传默认为false
+      imgCode:{
+        default: true
+      } //图形验证码
+    },
     components:{
       XInput,Group
     },
 
-    computed:{ 
+    computed:{
     },
 
     methods:{
-      btnClick() {  
+      btnClick() {
         if(this.imgCode !== "false") {  //不需要图形验证码（注册页面）
           getSmsCode({
             mobile:this.phoneNo,
             verifyCode:this.imgCode
           }).then(data =>{
-            if(data.error.error){
+            if(data.error){
               customToast(data);
               return ;
             }
@@ -58,17 +70,17 @@
           getNoImgSmsCode({
             mobile:this.phoneNo
           }).then(data =>{
-            if(data.error.error){
+            if(data.error){
               customToast(data);
               return ;
             }
             this.isDisabled = true;   //倒计时中不允许再次点击
             this.countDown();
-            
+
           })
         }
-       
-        
+
+
       },
       smsCodeChange(val) {
         this.smsCode = val;
@@ -80,7 +92,7 @@
           that.time -=1;
           that.value = that.time + 's后重发'; //更改显示内容
           that.btn = true;   //字的颜色变灰
-          
+
           if(that.time == 0) {
             clearInterval(timer); //清除定时器
             that.time = that.startNo; //重设
@@ -89,9 +101,9 @@
             that.isDisabled = false;
           }
         },1000)
-       
+
       },
-      
+
     },
   }
 </script>
@@ -115,6 +127,6 @@
     .weui-cells{
       margin-top:0;
     }
-    
+
 
 </style>

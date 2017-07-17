@@ -4,7 +4,7 @@
       <headTop headTitle="客户经理"></headTop>
       <div class="customerManager-content" style="width:80%; background:#fff;margin-left: 10%;margin-top:10%; border-radius: 10px; box-shadow: 1px 0px 6px -2px">
       <article class="userinfo">
-        <img src="../../images/man_agency.png" width="80" height="80"/>
+        <img src="../../images/man_agency.png" width="80" height="80">
         <p class="center mt-5" >{{saleName}}</p>
       </article>
       <article class="stores">
@@ -67,12 +67,12 @@ export default {
       checkManager({
         accountId:this.accountId
       }).then((data)=>{
-        if(data.error.error){
+        if(data.error){
           customToast(data);
           return;
         }
         console.log(data)
-       if(data.error.error){
+       if(data.error){
         customToast(data);
         return ;
        }
