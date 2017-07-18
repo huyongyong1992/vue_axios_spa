@@ -1,5 +1,4 @@
 import App from '../App'
-
 /**
  * 是否有额度
  * @Author   huyongyong
