@@ -223,8 +223,9 @@ export { getInfo }
 ```
 ## UI
 #### [UI库-vux](https://vux.li/#/)
-#### src/config/rem.js,以iphone6尺寸标准,1rem=37.5px
-
+```
+ src/config/rem.js,以iphone6尺寸标准,1rem=37.5px
+```
 ## 公共函数 mUtils.js
 ###### 获取url中的参数
 ```
