@@ -169,7 +169,6 @@ export const compressImg = (img, width, height) => {
     console.log(dataURL)
     return dataURL;
 }
-
 export const wxShare = (title, link, imgUrl, desc) => {
     const wx = window.wx;
     wx.ready(() => {
