@@ -8,7 +8,7 @@ const url = process.env.NODE_ENV === 'development' ? 'http://beauty-dev.vdanbao.
                         /*************************************************************************************************************************** */
 /**
  * 登录接口
- * @param { } openId,username,password 
+ * @param {} openId,username,password 
  */
 var login = (params) => getInfo(url+'/security/login', params,'post',true);
 
