@@ -33,7 +33,7 @@ git push origin dev //提交到分支
 ```
 
 ## 项目布局
-
+```
 .
 ├── build                                       // webpack配置文件
 ├── config                                      // 项目打包路径
@@ -125,7 +125,7 @@ git push origin dev //提交到分支
 ├── favicon.ico                                 // 图标
 ├── index.html                                  // 入口html文件
 .
-
+```
 ## 前后端数据交互之[axios](https://www.axios.com/)
 #### 1.组件中调用
 
