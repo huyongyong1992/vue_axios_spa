@@ -1,3 +1,4 @@
+# 参考自 [bailicangdu](https://github.com/bailicangdu/vue2-elm)
 ## 技术栈
 vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass 
 
