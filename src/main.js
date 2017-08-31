@@ -7,7 +7,6 @@ import './config/rem';
 import FastClick from 'fastclick';
 import { LoadingPlugin, ToastPlugin, DatetimePlugin, AlertPlugin } from 'vux';
 
-
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(DatetimePlugin)
