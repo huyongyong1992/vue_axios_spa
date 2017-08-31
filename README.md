@@ -250,14 +250,42 @@ export const getQuery = (key) => {
 ```
 import Vue from 'vue';
 export const customToast = e => {
-    Vue.$vux.toast.show({
-        text: e.message,
-        type: 'text',
-        width: '80%',
-        time: 1500
-    })
+    Vue.$vux.toast.text(e.message,'middle')
     if(e.code == 401) { //重新登入
        window.location.href="/#/login";
     }
 }
 ```
+####### 图片压缩
+export const compressImg = (base64) => {
+    if(base64.length <50000) {   //小于50K的借据不压缩
+        return base64;
+    }
+    var img = new Image();
+    img.src = base64;
+    let width = img.naturalWidth;
+    let height = img.naturalHeight;
+    //用于压缩图片的canvas
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext('2d');
+    var expectWidth = '';
+    var expectHeight = '';
+    if (width > height && width > 480) {
+        expectWidth = 480;
+        expectHeight = expectWidth * height / width ;
+    } else if (height > width && height > 600) {
+        expectHeight = 600;
+        expectWidth = expectHeight * width / height;
+    }
+    canvas.width = expectWidth;
+    canvas.height = expectHeight ;
+    //铺底色
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, expectWidth , expectHeight);
+    //进行最小压缩
+    let dataURL = canvas.toDataURL('image/jpeg', 1);
+     // console.log('压缩后：' + dataURL.length);
+    // console.log(dataURL)
+    return dataURL;   //输出压缩后的base64码
+}
