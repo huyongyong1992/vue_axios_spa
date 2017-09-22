@@ -257,6 +257,7 @@ export const customToast = e => {
 }
 ```
 ####### 图片压缩
+```
 export const compressImg = (base64) => {
     if(base64.length <50000) {   //小于50K的借据不压缩
         return base64;
@@ -289,3 +290,4 @@ export const compressImg = (base64) => {
     // console.log(dataURL)
     return dataURL;   //输出压缩后的base64码
 }
+```
