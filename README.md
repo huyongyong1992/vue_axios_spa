@@ -9,7 +9,7 @@ vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass
 ```
 git clone ssh://git@10.160.10.50:10022/o2o/wld-wechat-client.git
 
-cd wld-wechat-client  
+cd vue_axios_spa
 
 npm install //安装项目依赖
 
@@ -21,7 +21,10 @@ npm run dev
 
 访问 http://localhost:8088（自动编译）
 ```
-
+### 测试环境
+```
+npm run test //环境变量依然为devolopment
+```
 ### 生产环境
 ```
 npm run build   //生成的wld文件夹放在服务器即可正常访问
@@ -145,8 +148,7 @@ git push origin dev //提交到分支
                 params:params,  //传参
             }).then((data) =>{
                 //响应的结果
-            })
-            
+            })    
         },
     }
   }
@@ -157,24 +159,18 @@ git push origin dev //提交到分支
 #### 2.service/getData.js
 ```
     import gitInfo from '../config/axios';    //引入封装好的axios组件
-    var getOrderList = (params) => getInfo(url,params,method);
+    export const getOrderList = (params) => getInfo(url,params,method);
     //参数解释:
     //params:组件中调用该方法传的参数
     //url:接口路径
     //method:请求方法
-    
-    export { getOrderList } //记得export该函数!
 ```
-
 #### 3.axios.js
-
 ```
 import axios from 'axios';   
-
-var fetch = axios.create({  //创建axios实例
+let fetch = axios.create({  //创建axios实例
     headers: { 'Content-Type': 'application/json' }     //设置请求头
 })
-
 function json2url(json,isQueryToken) {  //将参数封装成（a=a&b=b）形式
 	if(!isQueryToken) {
 		json.accessToken = accessToken;	//每次请求都带上accessToken
@@ -187,20 +183,19 @@ function json2url(json,isQueryToken) {  //将参数封装成（a=a&b=b）形式
 	}
 	return arr.join('&');
 }
-
-var getInfo = (url='',data={},type='get',isQueryToken=false) =>{
+let getInfo = (url='',data={},type='get',isQueryToken=false) =>{
     if(type === 'get'){	//get请求
-        var params = json2url(data,isQueryToken);
-		var getUrl = params ? (url + '?' + params) : url ;	//若传参data为空的话，就不拼接，不为空，则拼接url
-		return fetch.get(getUrl).then(function (resp) {
-			if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
-				window.localStorage.setItem('accessToken', resp.data.data.accessToken);
-			}
-			return resp.data ;  //axios会在响应参数外包裹一层
-		});  
+        let params = json2url(data,isQueryToken);
+		    let getUrl = params ? (url + '?' + params) : url ;	//若传参data为空的话，就不拼接，不为空，则拼接url
+        return fetch.get(getUrl).then(function (resp) {
+          if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
+            window.localStorage.setItem('accessToken', resp.data.data.accessToken);
+          }
+          return resp.data ;  //axios会在响应参数外包裹一层
+        });  
     }
 	if (type === 'post') { //post请求
-		var postUrl ;
+		let postUrl ;
 		if (!isQueryToken) {
 			postUrl = url.split("?")[1] ? url.split("?")[0] + "?" + url.split("?")[1] + "&accessToken=" + accessToken : url + "?accessToken=" + accessToken;
 		} else {
@@ -256,7 +251,7 @@ export const customToast = e => {
     }
 }
 ```
-####### 图片压缩
+###### 图片压缩
 ```
 export const compressImg = (base64) => {
     if(base64.length <50000) {   //小于50K的借据不压缩
