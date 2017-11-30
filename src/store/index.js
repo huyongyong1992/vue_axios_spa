@@ -7,8 +7,8 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  idCard:'360622199202035337',
-  idName: '胡公满',
+  idCard:'xxxxx',
+  idName: 'xxx',
   authCode:'',
   steps:0,
   authTitle:'',
