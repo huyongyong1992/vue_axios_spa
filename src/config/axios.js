@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { baseUrl } from './env';
 
 var fetch = axios.create({
     headers: { 'Content-Type': 'application/json' },
