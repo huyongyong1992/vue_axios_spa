@@ -51,7 +51,7 @@ fetch.interceptors.response.use(
 );
 
 const getInfo = (url='',data={},type='get') =>{
-  if(type === 'get'){	//对象拼接成字符串
+  if(type === 'get'){	
 		return fetch.get(url,data).then(function (resp) {
 			if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
 				window.localStorage.setItem('accessToken', resp.data.data.accessToken);
@@ -60,7 +60,7 @@ const getInfo = (url='',data={},type='get') =>{
 		});  
   }
    
-	if (type === 'post') { //对象拼接成字符串
+	if (type === 'post') { 
 			return fetch.post(url,data).then(function(resp) {
 					if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
 							window.localStorage.setItem('accessToken', resp.data.data.accessToken);
