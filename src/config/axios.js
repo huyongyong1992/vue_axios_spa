@@ -1,29 +1,58 @@
 import axios from 'axios';
+import router from './router'
 
-var fetch = axios.create({
-    headers: { 'Content-Type': 'application/json' },
-		timeout: 150000,
-})
+//设置全局axios默认值
+axios.defaults.timeout = 15000; //15s的超时验证
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
-function json2url(json,isQueryToken) {
-	if(!isQueryToken) {
-		const accessToken = window.localStorage.getItem('accessToken');
-		json.accessToken = accessToken;	//每次请求都带上accessToken
-		console.log(accessToken)
-	}
-	var arr = [];
-	var str = '';
-	for (var i in json) {
-		str = i + '=' + json[i];
-		arr.push(str);
-	}
-	return arr.join('&');
-}
-var getInfo = (url='',data={},type='get',isQueryToken=false) =>{
+// 创建axios实例
+const fetch = axios.create();
+
+// 添加拦截器
+axios.interceptors.request.use = fetch.interceptors.request.use;
+axios.interceptors.response.use = fetch.interceptors.response.use;
+
+// request 拦截器
+fetch.interceptors.request.use(
+    config => {
+        //每次发送请求之前检测都本地存有token（也可以存在vuex中，vuex去从localStorage/ssesionStorage中去取）,那么都要放在请求头发送给服务器
+        let accessToken = window.localStorage.getItem('accessToken')
+        if (accessToken) {
+            config.headers.Authorization = `token ${accessToken}`;  //设置header Authorization 的值为 token
+        }
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    }
+);
+
+// response 拦截器
+fetch.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => { //默认除了2XX之外的都是错误的，就会走这里
+        if (error.response) {
+            switch (error.response.status) {
+                case 401: 
+                    router.replace({ //跳转到登录页面
+                        path: 'login',
+                        query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                    });
+                case 403:
+                   router.replace({ //跳转到403页面
+                      path: '403',
+                  });
+            }
+        }
+        return Promise.reject(error.response);
+    }
+);
+
+const getInfo = (url='',data={},type='get') =>{
   if(type === 'get'){	//对象拼接成字符串
-    var params = json2url(data,isQueryToken);
-		var getUrl = params ? (url + '?' + params) : url ;	//若传参data为空的话，就不拼接，不为空，则拼接url
-		return fetch.get(getUrl).then(function (resp) {
+		return fetch.get(url,data).then(function (resp) {
 			if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
 				window.localStorage.setItem('accessToken', resp.data.data.accessToken);
 			}
@@ -32,20 +61,7 @@ var getInfo = (url='',data={},type='get',isQueryToken=false) =>{
   }
    
 	if (type === 'post') { //对象拼接成字符串
-			var postUrl ;
-			if (!isQueryToken) {
-				const accessToken = window.localStorage.getItem('accessToken');
-				postUrl = url.split("?")[1] ? url.split("?")[0] + "?" + url.split("?")[1] + "&accessToken=" + accessToken : url + "?accessToken=" + accessToken;
-			} else {
-					postUrl = url
-			}
-
-			return fetch({
-				method: type,
-				url: postUrl,
-				data: data,
-			
-			}).then(function(resp) {
+			return fetch.post(url,data).then(function(resp) {
 					if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
 							window.localStorage.setItem('accessToken', resp.data.data.accessToken);
 					}
