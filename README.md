@@ -1,4 +1,4 @@
-# 参考自 [bailicangdu](https://github.com/bailicangdu/vue2-elm)
+# 参考自 [bailicangdu](https://github.com/bailicangdu/vue2-elm)，在此基础上做了一些修改，优化。
 ## 技术栈
 vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass 
 
@@ -23,7 +23,7 @@ npm run dev
 ```
 ### 测试环境
 ```
-npm run test //环境变量依然为devolopment
+npm run test //环境变量依然为devolopment，但是编译和生产是一模一样的
 ```
 ### 生产环境
 ```
@@ -167,55 +167,79 @@ git push origin dev //提交到分支
 ```
 #### 3.axios.js
 ```
-import axios from 'axios';   
-let fetch = axios.create({  //创建axios实例
-    headers: { 'Content-Type': 'application/json' }     //设置请求头
-})
-function json2url(json,isQueryToken) {  //将参数封装成（a=a&b=b）形式
-	if(!isQueryToken) {
-		json.accessToken = accessToken;	//每次请求都带上accessToken
-	}
-	var arr = [];
-	var str = '';
-	for (var i in json) {
-		str = i + '=' + json[i];
-		arr.push(str);
-	}
-	return arr.join('&');
-}
-let getInfo = (url='',data={},type='get',isQueryToken=false) =>{
-    if(type === 'get'){	//get请求
-        let params = json2url(data,isQueryToken);
-		    let getUrl = params ? (url + '?' + params) : url ;	//若传参data为空的话，就不拼接，不为空，则拼接url
-        return fetch.get(getUrl).then(function (resp) {
-          if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
-            window.localStorage.setItem('accessToken', resp.data.data.accessToken);
-          }
-          return resp.data ;  //axios会在响应参数外包裹一层
-        });  
-    }
-	if (type === 'post') { //post请求
-		let postUrl ;
-		if (!isQueryToken) {
-			postUrl = url.split("?")[1] ? url.split("?")[0] + "?" + url.split("?")[1] + "&accessToken=" + accessToken : url + "?accessToken=" + accessToken;
-		} else {
-			postUrl = url
-		}
+import axios from 'axios';
+import router from '../router/router'
 
-		return fetch({
-			method: type,
-			url: postUrl,
-			data: data,     //请求body
-		}).then(function(resp) {
-			if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
+//设置全局axios默认值
+axios.defaults.timeout = 15000; //15s的超时验证
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+
+// 创建axios实例
+const fetch = axios.create();
+
+// 添加拦截器
+axios.interceptors.request.use = fetch.interceptors.request.use;
+axios.interceptors.response.use = fetch.interceptors.response.use;
+
+// request 拦截器
+fetch.interceptors.request.use(
+    config => {
+        //每次发送请求之前检测都本地存有token（也可以存在vuex中，vuex去从localStorage/ssesionStorage中去取）,那么都要放在请求头发送给服务器
+        let accessToken = window.localStorage.getItem('accessToken')
+        if (accessToken) {
+            config.headers.Authorization = `token ${accessToken}`;  //设置header Authorization 的值为 token
+        }
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    }
+);
+
+// response 拦截器
+fetch.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => { //默认除了2XX之外的都是错误的，就会走这里
+        if (error.response) {
+            switch (error.response.status) {
+                case 401: 
+                    router.replace({ //跳转到登录页面
+                        path: 'login',
+                        query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                    });
+                case 403:
+                   router.replace({ //跳转到403页面
+                      path: '403',
+                  });
+            }
+        }
+        return Promise.reject(error.response);
+    }
+);
+
+const getInfo = (url='',data={},type='get') =>{
+  if(type === 'get'){	
+		return fetch.get(url,data).then(function (resp) {
+			if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
 				window.localStorage.setItem('accessToken', resp.data.data.accessToken);
 			}
-			return resp.data;
-		})
+			return resp.data ;
+		});  
+  }
+   
+	if (type === 'post') { 
+			return fetch.post(url,data).then(function(resp) {
+					if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
+							window.localStorage.setItem('accessToken', resp.data.data.accessToken);
+					}
+					return resp.data;
+			})
 	}
 };
-export { getInfo }
 
+export {  getInfo }
 ```
 ## UI
 #### [UI库-vux](https://vux.li/#/)
