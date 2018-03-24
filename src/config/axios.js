@@ -1,5 +1,5 @@
 import axios from 'axios';
-import router from '../router'
+import router from '../router/router'
 
 //设置全局axios默认值
 axios.defaults.timeout = 15000; //15s的超时验证
