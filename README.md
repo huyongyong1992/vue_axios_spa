@@ -68,47 +68,6 @@ git push origin dev //提交到分支
 |   |   |   ├── borrowSuccess.vue               // 取现成功
 |   |   |   └── waitingLink.vue                 // 等待联系
 |   |   |
-|   |   ├── customerManager                     // 客户经理
-|   |   |   └── customerManager.vue             // 我的客户经理
-|   |   |
-|   |   ├── isLimit                             // 是否有额度
-|   |   |   ├── applyFail.vue                   // 还款失败
-|   |   |   ├── applySucecess.vue               // 还款成功
-|   |   |   ├── calculateLimit.vue              // 计算额度
-|   |   |   └── isLimit.vue                     // 是否有额度
-|   |   |
-|   |   ├── myBill                              // 我的账单
-|   |   |   ├── borrowRecord.vue                // 借款记录
-|   |   |   ├── myBill.vue                      // 我的账单
-|   |   |   ├── repayAllBill.vue                // 结清所有账单
-|   |   |   ├── repayCurrentBill.vue            // 还清当前账单
-|   |   |   └── repayPlan.vue                   // 还款计划
-|   |   |
-|   |   ├── more                                // 更多
-|   |   |   ├── aboutUs.vue                     // 关于维粒贷
-|   |   |   ├── connectUs.vue                   // 联系我们
-|   |   |   ├── greenhand.vue                   // 新手指引
-|   |   |   ├── branchSearch.vue                // 网点查询
-|   |   |   └── generalQuestion.vue             // 常见问题
-|   |　 |       ├── qa.vue                      // 常见问题
-|   |　 |       └── suggestion.vue              //意见反馈
-|   |   |
-|   |   ├── personalInfo                        // 个人信息
-|   |   |   ├── emergencyContact.vue            // 紧急联系人
-|   |   |   ├── presentAddress.vue              // 现居地
-|   |   |   ├── jobInfo.vue                     // 工作信息
-|   |   |   └── getLimit.vue                    // 获取额度
-|   |　 |       ├── bankCardAuthentication.vue  // 银行卡认证
-|   |　 |       ├── mobileAuthentication.vue    // 手机认证
-|   |　 |       ├── completeInfo.vue            // 完善信息
-|   |　 |       ├── bankCardAuthentication.vue  // 银行卡认证
-|   |　 |       └── personalAuthentication.vue  // 实名认证
-|   |　 |
-|   |   ├── recommendGift                       // 推荐有礼
-|   |　 |   ├── recommendGift.vue               // 推荐有礼
-|   |　 |   ├── createInviteCode.vue            // 创建邀请码
-|   |　 |   └── myRecommend.vue                 // 我的推荐
-|   |   |
 │ ├── plugins                                 // 引用的插件
 │ ├── router
 │ │ └── router.js                           // 路由配置
