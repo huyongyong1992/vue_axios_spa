@@ -24,7 +24,25 @@ const router = new VueRouter({
     mode: routerMode,
     strict: process.env.NODE_ENV !== 'production'
 })
-
+//注册全局钩子用来拦截导航
+router.beforeEach((to, from, next) => {
+    //获取localStorage里面的token
+    console.log(to.meta)
+    let token = window.localStorage.getItem('accessToken');
+    //判断要去的路由有没有requiresAuth
+    if(to.meta.requiresAuth){ //需要权限
+      if(token){
+        next();
+      }else{
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }  // 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由
+        });
+      }
+    }else{
+      next();//如果无需token,那么随它去吧
+    }
+  });
 
 new Vue({
     router,

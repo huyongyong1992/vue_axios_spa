@@ -23,7 +23,6 @@
     },
     created(){
 
-      // this.redirect();
     },
 
     components:{
@@ -34,49 +33,8 @@
         this.$router.push('/login')
       },
       Yes(){
-
-        const openId = getQuery('open_id');
-        window.localStorage.setItem('openId',openId);
-        //判断是否需要登录
-        getToken({
-           thirdAccount:openId,
-           thirdType:'weixin'
-        }).then((data)=>{
-          if(data.error){
-            customToast(data);
-            return ;
-          }
-          //查询是否有额度，如果有，则跳转borrowMoney页，否则跳转填写额度页
-          searchLimit({
-            openId:openId
-          }).then((data)=>{
-            if(data.error){
-              customToast(data);
-              return ;
-            }
-            if(data.data && data.data.wldMoney){
-              
-              this.$router.push('/borrowMoney')
-            }
-            else{
-              this.$router.push('/fillLimit')
-            }
-          })
-        })
-        
-      },
-      redirect(){
-        const code = getQuery('code');
-        getOpenId({
-          appid:'wxca056aeb5eea7277',
-          secret:'ca02f835e372398ffecaf424b8e42105',
-          code:code,
-          grant_type:'authorization_code'
-        }).then(data =>{
-          console.log(data)
-        })
+        this.$router.push('/greenhand')  
       }
-
     },
   }
 </script>

@@ -15,6 +15,7 @@ const register = r => require.ensure([], () => r(require('../page/accountManagem
  */
 const greenhand = r => require.ensure([], () => r(require('../page/more/greenhand')), 'greenhand'); //新手指引
 const connectUs = r => require.ensure([], () => r(require('../page/more/connectUs')), 'connectUs'); //联系我们
+const aboutUs = r => require.ensure([], () => r(require('../page/more/aboutUs')), 'aboutUs'); //联系我们
 
 export default [{
     path: '/',
@@ -49,25 +50,11 @@ export default [{
         }, {
             path: '/connectUs', //联系客服
             component: connectUs
+        }, {
+            path: '/aboutUs', //关于我们
+            component: aboutUs
         }
     ]
 }]
 
-//注册全局钩子用来拦截导航
-router.beforeEach((to, from, next) => {
-  //获取localStorage里面的token
-  let token = window.localStorage.getItem('accessToken');
-  //判断要去的路由有没有requiresAuth
-  if(to.meta.requiresAuth){ //需要权限
-    if(token){
-      next();
-    }else{
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }  // 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由
-      });
-    }
-  }else{
-    next();//如果无需token,那么随它去吧
-  }
-});
+
