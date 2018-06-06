@@ -13,7 +13,6 @@
 			if(process.env.NODE_ENV !== 'production') {
 				let VConsole = require('vconsole');
 				let vConsole = new VConsole();
-				vConsole.setOption('maxLogNumber', 5000);
 			}
 		}
 	}

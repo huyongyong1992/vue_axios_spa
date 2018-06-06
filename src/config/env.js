@@ -8,24 +8,16 @@
  * 
  */
 let url;
-let signUrl ;
 let routerMode;
-let wxapiUrl;
 if (process.env.NODE_ENV === 'production') {
 	url = 'https://xxx.com';	//生产环境接口url
-  wxapiUrl = 'https://xxx/';
 	routerMode = 'hash';
-	signUrl = 'https://xxx.com';
 }else{
 	url = 'http://xxx/api';
 	routerMode = 'hash';
-	signUrl = 'http://xxx.com';
-	wxapiUrl = 'http://xxx/api';
 }
 
 export {
 	url,
 	routerMode,
-	signUrl,
-  wxapiUrl
 }
