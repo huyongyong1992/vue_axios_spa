@@ -1,4 +1,4 @@
- <template>
+<template>
 	<div class="loading_container">
 	    <div class="load_img" :style="{backgroundPositionY: -(positionY%7)*2.5 + 'rem'}">
 	    </div>

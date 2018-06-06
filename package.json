@@ -7,19 +7,18 @@
   "license": "Apache",
   "scripts": {
     "dev": "node build/dev-server.js",
+    "test": "node build/test.js",
     "build": "node build/build.js"
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "better-scroll": "^0.1.15",
-    "crypto-js": "^3.1.9-1",
+    "console.js": "^2.0.1",
     "fastclick": "^1.0.6",
-    "iscroll": "^5.2.0",
     "js-md5": "^0.4.2",
-    "natty-storage": "^2.0.2",
-    "showdown": "^1.6.4",
+    "vconsole": "^3.2.0",
     "vue": "^2.1.0",
     "vue-router": "^2.1.1",
+    "vue-wechat-title": "^2.0.4",
     "vuex": "^2.0.0",
     "vux": "^2.4.0"
   },
@@ -41,6 +40,7 @@
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
     "function-bind": "^1.0.2",
     "html-webpack-plugin": "^2.8.1",
     "http-proxy-middleware": "^0.17.2",
@@ -56,7 +56,7 @@
     "scss": "^0.2.4",
     "scss-loader": "0.0.1",
     "semver": "^5.3.0",
-    "shelljs": "^0.7.4",
+    "shelljs": "^0.7.8",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "vue-loader": "^10.0.0",
@@ -70,7 +70,7 @@
     "webpack-merge": "^0.14.1"
   },
   "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">= 6.2.0",
+    "npm": ">= 3.8.9"
   }
 }

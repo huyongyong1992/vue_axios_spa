@@ -46,13 +46,10 @@ if (context.length) {
 }
 
 server.use(proxyMiddleware('/payapi', {
-    target: 'https://pay.ele.me',
+    target: 'our pay uri',
     changeOrigin: true,
 }))
-server.use(proxyMiddleware('/m.ele.me@json', {
-    target: 'https://crayfish.elemecdn.com',
-    changeOrigin: true,
-}))
+
 
 
 

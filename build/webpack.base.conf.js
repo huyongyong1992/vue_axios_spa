@@ -7,10 +7,12 @@ var env = process.env.NODE_ENV
     // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
     // various preprocessor loaders added to vue-loader at the end of this file
 var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
+var cssSourceMapTest = (env === 'test' && config.test.cssSourceMap)
 var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
-var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
+var useCssSourceMap = cssSourceMapDev || cssSourceMapTest || cssSourceMapProd
 
 var vuxLoader = require('vux-loader');
+
 
 var webpackConfig = {
   entry: {
@@ -18,7 +20,7 @@ var webpackConfig = {
   },
   output: {
     path: config.build.assetsRoot,
-    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
+    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath :(process.env.NODE_ENV === 'test' ? config.test.assetsPublicPath :config.dev.assetsPublicPath) ,
     filename: '[name].js'
   },
   resolve: {

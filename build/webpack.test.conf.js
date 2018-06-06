@@ -6,24 +6,24 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var env = config.build.env
+var env = config.test.env
 
 var webpackConfig = merge(baseWebpackConfig, {
     module: {
         loaders: utils.styleLoaders({
-            sourceMap: config.build.productionSourceMap,
+            sourceMap: config.test.productionSourceMap,
             extract: true
         })
     },
-    //devtool: config.build.productionSourceMap ? '#source-map' : false,
+    //devtool: config.test.productionSourceMap ? '#source-map' : false,
     output: {
-        path: config.build.assetsRoot,
+        path: config.test.assetsRoot,
         filename: utils.assetsPath('js/[name].js'),
         chunkFilename: utils.assetsPath('js/[name].[chunkhash].min.js')
     },
     vue: {
         loaders: utils.cssLoaders({
-            sourceMap: config.build.productionSourceMap,
+            sourceMap: config.test.productionSourceMap,
             extract: true
         })
     },
@@ -32,12 +32,9 @@ var webpackConfig = merge(baseWebpackConfig, {
         new webpack.DefinePlugin({
             'process.env': env
         }),
-        new webpack.optimize.UglifyJsPlugin({                           //js文件压缩插件
-            compress: {                                                 // 压缩配置
-                warnings: false,
-                drop_debugger: true,                                    // 移除debugger
-                dead_code:true,                                         //移除未被引用的代码
-                drop_console: true                                      //不显示console
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
             }
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -47,7 +44,7 @@ var webpackConfig = merge(baseWebpackConfig, {
         // you can customize output by editing /index.html
         // see https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
-            filename: config.build.index,
+            filename: config.test.index,
             template: 'index.html',
             inject: true,
             // minify: {
@@ -83,7 +80,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     ]
 })
 
-if (config.build.productionGzip) {
+if (config.test.productionGzip) {
     var CompressionWebpackPlugin = require('compression-webpack-plugin')
 
     webpackConfig.plugins.push(
@@ -92,7 +89,7 @@ if (config.build.productionGzip) {
             algorithm: 'gzip',
             test: new RegExp(
                 '\\.(' +
-                config.build.productionGzipExtensions.join('|') +
+                config.test.productionGzipExtensions.join('|') +
                 ')$'
             ),
             threshold: 10240,

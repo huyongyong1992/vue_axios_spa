@@ -7,11 +7,7 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  idCard:'xxxxx',
-  idName: 'xxx',
-  authCode:'',
-  steps:0,
-  authTitle:'',
+  token:''
 }
 
 export default new Vuex.Store({

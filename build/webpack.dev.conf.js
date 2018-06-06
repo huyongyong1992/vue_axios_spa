@@ -19,14 +19,13 @@ module.exports = merge(baseWebpackConfig, {
     // eval-source-map is faster for development
     devtool: '#eval-source-map',
     plugins: [
-        new webpack.DefinePlugin({
+        new webpack.DefinePlugin({                      //编译时配置的全局变量
             'process.env': config.dev.env
         }),
-        // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
+        new FriendlyErrorsPlugin(),                     //友好的错误提示
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),
-        // https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: 'index.html',
