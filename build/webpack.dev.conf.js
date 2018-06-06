@@ -22,7 +22,7 @@ module.exports = merge(baseWebpackConfig, {
         new webpack.DefinePlugin({                      //编译时配置的全局变量
             'process.env': config.dev.env
         }),
-        new FriendlyErrorsPlugin(),                     //友好的错误提示
+        // new FriendlyErrorsPlugin(),                     //友好的错误提示
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),

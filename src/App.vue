@@ -10,12 +10,11 @@
 
 	export default {
 		created() {
-			// if(process.env.NODE_ENV !== 'production') {
-			// 	let VConsole = require('vconsole');
-			// 	let vConsole = new VConsole();
-			// 	vConsole.setOption('maxLogNumber', 5000);
-			// }
-			console.log('aaa')
+			if(process.env.NODE_ENV !== 'production') {
+				let VConsole = require('vconsole');
+				let vConsole = new VConsole();
+				vConsole.setOption('maxLogNumber', 5000);
+			}
 		}
 	}
 
