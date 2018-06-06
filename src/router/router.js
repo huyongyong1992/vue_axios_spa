@@ -6,6 +6,7 @@ import App from '../App'
 const redirect = r => require.ensure([], () => r(require('../page/redirect/redirect')), 'redirect'); //重定向
 const consolejs = r => require.ensure([], () => r(require('../page/redirect/consolejs')), 'consolejs'); //重定向
 
+const activeRoute = r => require.ensure([], () => r(require('../page/redirect/activeRoute')), 'activeRoute'); //动态路由
 
 export default [{
     path: '/',
@@ -30,6 +31,13 @@ export default [{
             component: consolejs,
             meta:{
                 title:'console'
+            }
+        },
+        {
+            path: '/activeRoute/:id',
+            component: activeRoute,
+            meta:{
+                title:'动态路由'
             }
         },
         

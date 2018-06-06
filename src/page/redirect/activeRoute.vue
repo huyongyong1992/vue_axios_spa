@@ -1,6 +1,6 @@
 <template>
-    <div class="redirect">
-      <x-button type="primary" @click.native="onRouteClick">动态路由</x-button>
+    <div class="activeRoute">
+      动态路由:您的id是{{id}}
     </div>
 </template>
 
@@ -9,25 +9,24 @@
   export default {
     data(){
       return{
-
+        id:null
       }
     },
     created(){
-        
+      this.id = this.$route.params.id
     },
     components:{
       XButton
     },
     methods:{
-      onRouteClick() {
-        let id = parseInt(Math.random()*100)
-        this.$router.push(`/activeRoute/${id}`)
-      }
+      
     }
   }
 </script>
 <style lang="less">
-
+  .activeRoute{
+    font-size:18px;
+  }
 </style>
 
 
