@@ -8,6 +8,11 @@ const consolejs = r => require.ensure([], () => r(require('../page/redirect/cons
 
 const activeRoute = r => require.ensure([], () => r(require('../page/redirect/activeRoute')), 'activeRoute'); //动态路由
 
+
+const parentRoute = r => require.ensure([], () => r(require('../page/redirect/parentRoute')), 'parentRoute'); //父路由
+const childOneRoute = r => require.ensure([], () => r(require('../page/redirect/childOneRoute')), 'childOneRoute'); //父路由
+const childTwoRoute = r => require.ensure([], () => r(require('../page/redirect/childTwoRoute')), 'childTwoRoute'); //父路由
+
 export default [{
     path: '/',
     component: App, //顶层路由，对应index.html
@@ -39,6 +44,26 @@ export default [{
             meta:{
                 title:'动态路由'
             }
+        },
+        {
+            path: '/parentRoute',
+            component: parentRoute,
+            meta:{
+                title:'父路由'
+            },
+            children:[{
+                path: '/childOneRoute',
+                component: childOneRoute,
+                meta:{
+                    title:'子路由1'
+                }
+            },{
+                path: '/childTwoRoute',
+                component: childTwoRoute,
+                meta:{
+                    title:'子路由2'
+                }
+            }]
         },
         
     ]

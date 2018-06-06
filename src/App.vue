@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<transition name="router-fade" mode="out-in">
-    		<router-view v-wechat-title="$route.meta.title"></router-view>
-    	</transition>
+			<router-view v-wechat-title="$route.meta.title"></router-view>
+		</transition>
     </div>
 </template>
 
