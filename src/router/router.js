@@ -13,6 +13,10 @@ const parentRoute = r => require.ensure([], () => r(require('../page/redirect/pa
 const childOneRoute = r => require.ensure([], () => r(require('../page/redirect/childOneRoute')), 'childOneRoute'); //父路由
 const childTwoRoute = r => require.ensure([], () => r(require('../page/redirect/childTwoRoute')), 'childTwoRoute'); //父路由
 
+
+const cropa = r => require.ensure([], () => r(require('../page/redirect/cropajs')), 'cropa'); //图片裁剪
+
+
 export default [{
     path: '/',
     component: App, //顶层路由，对应index.html
@@ -43,6 +47,13 @@ export default [{
             component: activeRoute,
             meta:{
                 title:'动态路由'
+            }
+        },
+        {
+            path: '/cropa',
+            component: cropa,
+            meta:{
+                title:'图片裁剪'
             }
         },
         {

@@ -21,7 +21,6 @@
       }
     },
     created(){
-      this.id = this.$route.params.id
     },
     components:{
       XButton

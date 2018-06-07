@@ -17,6 +17,7 @@
     "js-md5": "^0.4.2",
     "vconsole": "^3.2.0",
     "vue": "^2.1.0",
+    "vue-croppa": "^1.3.6",
     "vue-router": "^2.1.1",
     "vue-wechat-title": "^2.0.4",
     "vuex": "^2.0.0",

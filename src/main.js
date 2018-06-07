@@ -23,6 +23,10 @@ if ('addEventListener' in document) {
     FastClick.attach(document.body);
   }, false);
 }
+
+import Croppa from 'vue-croppa'
+Vue.use(Croppa) 
+
 //注册全局钩子用来拦截导航
 // router.beforeEach((to, from, next) => {
 

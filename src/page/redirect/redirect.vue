@@ -3,6 +3,7 @@
       <x-button type="primary" @click.native="onRouteClick">动态路由</x-button>
 
       <x-button type="primary" @click.native="onChildrenClick">子路由</x-button>
+      <x-button type="primary" @click.native="onImgClick">图片裁剪</x-button>
     </div>
 </template>
 
@@ -27,6 +28,9 @@
       },
       onChildrenClick() {
         this.$router.push('/childOneRoute')
+      },
+      onImgClick() {
+        this.$router.push('/cropa')
       }
     }
   }
