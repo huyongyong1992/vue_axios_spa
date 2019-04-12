@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import App from './App';
 import VueRouter from 'vue-router';
 import routes from './router/router';
 import store from './store/';
-import { routerMode } from './config/env';
 import './config/rem';
 import FastClick from 'fastclick';
 import { LoadingPlugin, ToastPlugin, DatetimePlugin, AlertPlugin } from 'vux';
@@ -15,7 +15,7 @@ Vue.use(AlertPlugin)
 Vue.use(VueRouter)
 const router = new VueRouter({
   routes,
-  mode: routerMode,
+  mode: "hash",
   strict: process.env.NODE_ENV === 'production'
 })
 if ('addEventListener' in document) {
@@ -27,4 +27,5 @@ if ('addEventListener' in document) {
 new Vue({
   router,
   store,
+  render: h => h(App)
 }).$mount('#app')

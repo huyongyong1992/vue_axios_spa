@@ -5,7 +5,6 @@
  *
  */
 let url;
-let routerMode = "hash";
 if (process.env.NODE_ENV === "production") {
   url = "https://xxx.com"; //生产环境接口url
 } else if (process.env.NODE_ENV === "test") {
@@ -14,4 +13,4 @@ if (process.env.NODE_ENV === "production") {
   url = "https://easy-mock.com/mock/5a2f70916ce8af6869ec3956/example";
 }
 
-export { url, routerMode };
+export { url };

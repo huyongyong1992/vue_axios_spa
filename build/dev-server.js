@@ -5,8 +5,6 @@ var path = require("path");
 var express = require("express");
 var webpack = require("webpack");
 
-// opn是一个可以调用默认软件打开网址、图片、文件等内容的插件,这里用它来调用默认浏览器打开dev-server监听的端口，例如：localhost:8080
-var opn = require("opn");
 
 // http-proxy-middleware是一个express中间件，用于将http请求代理到其他服务器
 var proxyMiddleware = require("http-proxy-middleware");
@@ -52,7 +50,7 @@ if (context.length) {
 
 server.use(
   proxyMiddleware("/payapi", {
-    target: "our pay uri",
+    target: "/",
     changeOrigin: true
   })
 );
@@ -74,6 +72,8 @@ var staticPath = path.posix.join(
 );
 server.use(staticPath, express.static("./static"));
 
+
+
 module.exports = server.listen(port, function(err) {
   if (err) {
     console.log(err);
@@ -81,5 +81,10 @@ module.exports = server.listen(port, function(err) {
   }
   var uri = "http://localhost:" + port;
   console.log("Listening at " + uri + "\n");
-
+  // opn是一个可以调用默认软件打开网址、图片、文件等内容的插件,这里用它来调用默认浏览器打开dev-server监听的端口，例如：localhost:8080
+  // var open = require("open");
+  // (async () => {
+  //   await open(uri);
+  // })()
+  
 });
