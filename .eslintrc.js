@@ -42,6 +42,7 @@ module.exports = {
             'before': false,
             'after': true
         }],
+        'semi': 0,
         'comma-style': [2, 'last'],
         'constructor-super': 2,
         'curly': [2, 'multi-line'],
