@@ -8,7 +8,7 @@ export default new class Verify {
 
   //验证手机号码是否正确， true/false
   isTel(tel) {
-    return (/^1[3|4|5|7|8|9][0-9]\d{4,8}$/).test(tel)
+    return (/^1[3|4|5|6|7|8|9]\d{9}$/).test(tel)
   }
 
   //判断是否是object对象
