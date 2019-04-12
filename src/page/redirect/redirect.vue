@@ -1,6 +1,5 @@
 <template>
   <div class="redirect">
-    aaa
     <x-button type="primary" @click.native="onRouteClick">动态路由</x-button>
   </div>
 </template>
