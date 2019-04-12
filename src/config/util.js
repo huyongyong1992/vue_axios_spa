@@ -1,4 +1,3 @@
-import Vue from "vue";
 /**
  * 存储/获取localStorage
  */

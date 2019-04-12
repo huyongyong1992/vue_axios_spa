@@ -2,8 +2,6 @@ import axios from 'axios';
 import { operateStorage } from '../config/util';
 import Vue from 'vue';
 import { url } from './env';
-//设置全局axios默认值
-// axios.defaults.timeout = 30000; //30s的超时验证
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 创建axios实例
@@ -15,7 +13,7 @@ const fetch = axios.create({
   timeout: 15000
 })
 
-export const request = (url='',data={},type='get') =>{
+export const request = (url='', data={}, type='get') =>{
   if(type.toLowerCase() === 'get'){	
     return new Promise((resolve,reject) => {
       fetch.get(url,{params: data}).then((resp)  =>{
