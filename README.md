@@ -74,22 +74,22 @@ const fetch = axios.create();
 
 const getInfo = (url='',data={},type='get') =>{
     if(type === 'get'){	
-		return fetch.get(url,data).then(function (resp) {
-			if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
-				window.localStorage.setItem('accessToken', resp.data.data.accessToken);
-			}
-			return resp.data ;
-		});  
+        return fetch.get(url,data).then(function (resp) {
+            if (resp.data.data && resp.data.data.accessToken) {	//更新accessToken
+                window.localStorage.setItem('accessToken', resp.data.data.accessToken);
+            }
+            return resp.data ;
+        });  
     }
 
-	if (type === 'post') { 
-			return fetch.post(url,data).then(function(resp) {
-					if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
-							window.localStorage.setItem('accessToken', resp.data.data.accessToken);
-					}
-					return resp.data;
-			})
-	}
+    if (type === 'post') { 
+            return fetch.post(url,data).then(function(resp) {
+                    if (resp.data.data && resp.data.data.accessToken) { //更新accessToken
+                            window.localStorage.setItem('accessToken', resp.data.data.accessToken);
+                    }
+                    return resp.data;
+            })
+    }
 };
 
 export {  getInfo }
