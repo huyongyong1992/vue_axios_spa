@@ -123,9 +123,9 @@ export const getQuery = (key) => {
 // App.vue
 export default {
     created() {
-        if(process.env.NODE_ENV !== 'production') {         //生产环境 不启用,测试环境和本地环境启用
+        if(process.env.NODE_ENV === 'test') {         //测试环境启用
             let VConsole = require('vconsole');
-            let vConsole = new VConsole();
+            this.vConsole = new VConsole();
         }
     }
 }
