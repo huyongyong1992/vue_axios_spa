@@ -1,32 +1,29 @@
 <template>
-	<div>
-		<transition name="router-fade" mode="out-in">
-			<!-- 自定义微信title -->
-			<router-view v-wechat-title="$route.meta.title"></router-view>
-		</transition>
-    </div>
+	<div id="app">
+		<router-view v-wechat-title="$route.meta.title" />
+	</div>
 </template>
-
 <script>
+export default {
+    name: 'App',
+    data() {
+        return {
+            vConsole: ''
+        };
+    },
+    created() {
+        if (process.env.NODE_ENV === 'test') {
+            let VConsole = require('vconsole');
+            this.vConsole = new VConsole();
+        }
+    }
 
-	export default {
-		created() {
-			// 开发环境配置vconsole
-			if(process.env.NODE_ENV === 'development') {
-				let VConsole = require('vconsole');
-				let vConsole = new VConsole();
-			}
-		}
-	}
-
+};
 </script>
 
 <style lang="less">
-  	@import './style/common';
-	.router-fade-enter-active, .router-fade-leave-active {
-	  	transition: opacity .3s;
-	}
-	.router-fade-enter, .router-fade-leave-active {
-	  	opacity: 0;
-	}
+#app {
+    font-family: Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+}
 </style>

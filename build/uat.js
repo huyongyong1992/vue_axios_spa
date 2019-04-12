@@ -1,7 +1,7 @@
 'use strict'
 require('./check-versions')()
 
-process.env.NODE_ENV = 'test'
+process.env.NODE_ENV = 'uat'
 
 const ora = require('ora')
 const rm = require('rimraf')
@@ -9,12 +9,12 @@ const path = require('path')
 const chalk = require('chalk')
 const webpack = require('webpack')
 const config = require('../config')
-const webpackConfig = require('./webpack.test.conf')
+const webpackConfig = require('./webpack.uat.conf')
 
-const spinner = ora('building test env package ...')
+const spinner = ora('building uat env package ...')
 spinner.start()
 
-rm(path.join(config.test.assetsRoot, config.test.assetsSubDirectory), err => {
+rm(path.join(config.uat.assetsRoot, config.uat.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
     spinner.stop()
@@ -28,11 +28,11 @@ rm(path.join(config.test.assetsRoot, config.test.assetsSubDirectory), err => {
     }) + '\n\n')
 
     if (stats.hasErrors()) {
-      console.log(chalk.red('  Build test env package failed with errors.\n'))
+      console.log(chalk.red('  Build uat env package failed with errors.\n'))
       process.exit(1)
     }
 
-    console.log(chalk.cyan('  Build test env package complete.\n'))
+    console.log(chalk.cyan('  Build uat env package complete.\n'))
     console.log(chalk.yellow(
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'

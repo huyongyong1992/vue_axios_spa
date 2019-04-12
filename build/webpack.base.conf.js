@@ -1,47 +1,42 @@
+'use strict'
 const path = require('path')
-const config = require('../config')
 const utils = require('./utils')
-const projectRoot = path.resolve(__dirname, '../')
+const config = require('../config')
+const vueLoaderConfig = require('./vue-loader.conf')
 const webpack = require('webpack')
-const env = process.env.NODE_ENV
-    // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
-    // various preprocessor loaders added to vue-loader at the end of this file
-// const cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
-// const cssSourceMapTest = (env === 'test' && config.test.cssSourceMap)
-// const cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
-// const useCssSourceMap = cssSourceMapDev || cssSourceMapTest || cssSourceMapProd
-var vueLoaderConfig = require('./vue-loader.conf')
-let vuxLoader = require('vux-loader');
+const vuxLoader = require('vux-loader')                     //加vux-loader
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 const createLintingRule = () => ({
   test: /\.(js|vue)$/,
   loader: 'eslint-loader',
   enforce: 'pre',
-  include: [path.resolve('src')],
+  include: [resolve('src'), resolve('test')],
   options: {
     formatter: require('eslint-friendly-formatter'),
     emitWarning: !config.dev.showEslintErrorsInOverlay
   }
 })
+
 const webpackConfig = {
+  context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
   },
   output: {
-    // webpack输出的目标文件夹路径（例如：/dist）
     path: config.build.assetsRoot,
-    // webpack编译输出的发布路径（例如'//cdn.xxx.com/app/'）
-    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath :(process.env.NODE_ENV === 'test' ? config.test.assetsPublicPath :config.dev.assetsPublicPath) ,
-    // webpack输出bundle文件命名格式
-    filename: '[name].js'
+    filename: '[name].js',
+    publicPath: process.env.NODE_ENV === 'development'
+      ? config.dev.assetsPublicPath
+      : (process.env.NODE_ENV === 'test' ? config.test.assetsPublicPath : config.build.assetsPublicPath)
   },
   resolve: {
-    extensions: [ '.js', '.vue', '.json'],
-    //别名设置，减少引入路径复杂度
+    extensions: ['.js', '.vue', '.json'],
     alias: {
-      'src': path.resolve(__dirname, '../src'),
-      'assets': path.resolve(__dirname, '../src/assets'),
-      'components': path.resolve(__dirname, '../src/components'),
-      '@': path.resolve(__dirname, '../src')
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': resolve('src'),
     }
   },
   module: {
@@ -50,12 +45,12 @@ const webpackConfig = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        // options: vueLoaderConfig
+        options: vueLoaderConfig
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [path.resolve('src'),  path.resolve('node_modules/webpack-dev-server/client')]
+        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -80,11 +75,22 @@ const webpackConfig = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }]
+      }
+    ]
   },
-  
+  node: {
+    // prevent webpack from injecting useless setImmediate polyfill because Vue
+    // source contains it (although only uses it if it's native).
+    setImmediate: false,
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty'
+  }
 }
-// 配置vux插件，祥见vux官方文档
 module.exports = vuxLoader.merge(webpackConfig, {
   plugins: [
     'vux-ui',
